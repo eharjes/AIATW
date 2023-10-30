@@ -3,13 +3,15 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 class Crawler:
-    def __init__(self, start_url):
+    def __init__(self, start_url, max_pages):
         self.start_url = start_url
         self.visited = set()
+        self.max_pages = max_pages
+        self.session = requests.Session() # Session object for the reuse of the same TCP connection
 
     def crawl(self):
         stack = [self.start_url]
-        while stack:
+        while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
             if url not in self.visited:
                 # print(f"Processing: {url}")  
@@ -21,8 +23,8 @@ class Crawler:
 
     def get_content(self, url):
         try:
-            response = requests.get(url, timeout=0.05)
-            if response.status_code != 404 and 'text/html' in response.headers['Content-Type']:
+            response = self.session.get(url, timeout=0.05)
+            if response.status_code != 404 and 'Content-Type' in response.headers and 'text/html' in response.headers['Content-Type']:
                 return response.text
         except requests.RequestException as e:
             print(f"Request failed: {e}")
