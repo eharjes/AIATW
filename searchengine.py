@@ -21,5 +21,6 @@ class SearchEngine:
 if __name__ == "__main__":
     engine = SearchEngine('https://vm009.rz.uos.de/crawl/page1.html', 300)
     engine.build_index()
-    result = engine.search('glitches')
-    print(f'URLs containing the word "word_to_search": {result}')
+    search_word = 'glitches'
+    result = engine.search(search_word)
+    print(f'URLs containing the word {search_word}: {result}')
