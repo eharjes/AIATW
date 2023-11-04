@@ -9,7 +9,7 @@ class Indexer:
     def add_to_index(self, url, content):
         words = self.get_words(content)
         for word in words:
-            print(f"Adding: {word}")
+            # print(f"Adding: {word}")
             if word not in self.index:
                 self.index[word] = [(url, 1)]
             else:
