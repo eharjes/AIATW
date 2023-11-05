@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Search Results</title>
+</head>
+<body>
+  <h1>Search Results</h1>
+  {% if urls %}
+    <ul>
+    {% for url in urls %}
+      <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No results found for "{{ query }}".</p>
+  {% endif %}
+</body>
+</html>
