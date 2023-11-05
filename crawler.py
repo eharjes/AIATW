@@ -23,7 +23,7 @@ class Crawler:
 
     def get_content(self, url):
         try:
-            response = self.session.get(url, timeout=1)
+            response = self.session.get(url, timeout=5)
             # Check the response header for 'text/html' content type
             if (response.status_code != 404 and 'Content-Type' in response.headers and
                     'text/html' in response.headers['Content-Type']):
