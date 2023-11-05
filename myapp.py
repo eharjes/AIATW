@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 from searchengine import SearchEngine  # Assuming your search engine code is in search_engine.py
 
 app = Flask(__name__)
-search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
+search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 400)
 search_engine.build_index()
 
 @app.route('/')

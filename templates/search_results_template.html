@@ -5,7 +5,13 @@
   <title>Search Results</title>
 </head>
 <body>
-  <h1>Search Results</h1>
+  <h1>Search Engine</h1>
+  <form action="/search" method="get">
+    <input type="text" name="q" placeholder="Search" value="{{ query }}">
+    <input type="submit" value="Search">
+  </form>
+
+  <h2>Search Results for "{{ query }}"</h2>
   {% if urls %}
     <ul>
     {% for url in urls %}
