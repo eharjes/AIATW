@@ -1,10 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>My Search Engine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #search-container {
+            text-align: center;
+        }
+
+        #search-box {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #search-button {
+            background-color: #7F96A2;
+            color: white;
+            border: #7F96A2;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #search-results {
+            margin-top: 20px;
+        }
+
+        .result {
+            margin: 40px;
+        }
+
+        .result h2 {
+            font-size: 16px;
+        }
+
+        .result p {
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-$END$
+    <div id="search-container">
+        <h1>Search Engine</h1>
+        <form action="/search" method="get">
+            <input type="text" id="search-box" name="q" placeholder="Enter Search here...">
+            <button type="submit" id="search-button">Search</button>
+        </form>
+    </div>
+
+    <div id="search-results">
+        <div class="result">
+            <h2>Search Results</h2>
+            <p>The results will be displayed here.</p>
+        </div>
+
+    </div>
 </body>
 </html>

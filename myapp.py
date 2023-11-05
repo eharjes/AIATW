@@ -7,7 +7,7 @@ search_engine.build_index()
 
 @app.route('/')
 def home():
-    return render_template('home_page_template.html')
+    return render_template('home_page_template2.html')
 
 @app.route('/search')
 def search():
