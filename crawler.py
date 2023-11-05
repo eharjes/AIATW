@@ -43,4 +43,10 @@ class Crawler:
         return links
 
     def is_same_server(self, url):
+        """
+        Check whether domain of given URL matches the base domain
+
+        :param: new URL to check
+        :return: Whether URL's match (boolean)
+        """
         return urlparse(url).netloc == self.base_domain
