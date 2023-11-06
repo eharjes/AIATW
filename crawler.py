@@ -11,6 +11,11 @@ class Crawler:
         self.base_domain = urlparse(self.start_url).netloc
 
     def crawl(self):
+        """
+
+        :param: none specified, the intern parameters will be used
+        :return:
+        """
         stack = [self.start_url]
         while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
