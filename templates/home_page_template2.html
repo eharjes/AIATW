@@ -15,16 +15,19 @@
         }
 
         #search-box {
-            width: 70%;
+            width: 65%;
             padding: 10px;
             font-size: 16px;
             position: absolute;
             top: 100px;
-            left: 50px;
+            left: 5%;
         }
 
         #search-button {
+            width: 15%;
+            text-align: center;
             background-color: #2B6521;
+            display: inline-block;
             color: white;
             border: #7F96A2;
             padding: 10px 20px;
@@ -32,7 +35,7 @@
             cursor: pointer;
             position: absolute;
             top: 102.5px;
-            right: 50px;
+            right: 5%;
         }
 
         #search-results {
@@ -72,9 +75,9 @@
 
     <div id="picture">
         <img
-             src="{{url_for('static',
-             filename='images/platypus.jpg')}}" class="image",
-             width = "200", height = "200"
+             src= "{{url_for('static', filename='images/platypus.jpg')}}",
+             width = "200",
+             height = "200"
         />
 
     </div>

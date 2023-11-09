@@ -3,6 +3,23 @@
 <head>
   <meta charset="utf-8">
   <title>Search Results</title>
+  <style>
+
+        #search-button {
+          width: 30%;
+          text-align: center;
+          background-color: #2B6521;
+          display: inline-block;
+          color: white;
+          border: #7F96A2;
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+          position: absolute;
+          top: 102.5px;
+          right: 50px;
+        }
+  </style>
 </head>
 <body>
   <h1>Search Results</h1>
@@ -13,7 +30,12 @@
     {% endfor %}
     </ul>
   {% else %}
-    <p>No results found for "{{ query }}" on the websites at hand.</p>
+    <p>No results found for "{{ query }}" on the websites at hand. <p>
+    <p>Please try another query. </p>
   {% endif %}
+
+  <form action="/" method="get">
+    <button type="submit" id="search-button">Go Back to Search!</button>
+  </form>
 </body>
 </html>

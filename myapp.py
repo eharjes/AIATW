@@ -18,3 +18,4 @@ def search():
     else:
         return '<p>Please enter a search term.</p>', 400
 
+
