@@ -21,6 +21,13 @@ class SearchEngine:
             self.ix = open_dir(self.index_dir)
 
     def build_index(self):
+        """
+        Builds an index for web pages by crawling and then indexing their content
+        initializes an index writer, starts or continues web crawling, retrieves web page content, and adds the content to the index
+
+        :param: none specified, the intern parameters will be used
+        :return:initializes an index writer, starts or continues web crawling, retrieves web page content, and adds the content to the index
+        """
         if not self.is_index_built():
             writer = self.ix.writer()
             self.crawler.crawl()
@@ -31,7 +38,12 @@ class SearchEngine:
             writer.commit()
     
     def is_index_built(self):
-        # This function checks if the index directory exists and if there are documents in it
+        """
+        Checks if the index directory exists and if there are documents in it
+
+        :param: none specified, the intern parameters will be used
+        :return:
+        """
         if exists_in(self.index_dir):
             ix = open_dir(self.index_dir)
             with ix.searcher() as searcher:
@@ -41,6 +53,7 @@ class SearchEngine:
     def search(self, words):
         """
         Search for pages that contain all the search words.
+
         :param words: A list of words to search for.
         :return: A list of URLs containing all the search words.
         """
