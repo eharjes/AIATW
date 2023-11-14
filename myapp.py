@@ -5,13 +5,16 @@ app = Flask(__name__)
 search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
 search_engine.build_index()
 
-@app.route('/')
+history = []
+@app.route('/', methods = ['GET', 'POST'])
 def home():
-    return render_template('home_page_template2.html')
+    query = request.form.getlist("q")
+    return render_template('home_page_template2.html', query = query)
 
 @app.route('/search')
 def search():
     query = request.args.get('q', '')
+    query2 = request.form.getlist("q")
     if query:
         urls = search_engine.search(query.split())
         return render_template('search_results_template.html', urls=urls, query=query)
