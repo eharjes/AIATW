@@ -6,15 +6,17 @@ search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
 search_engine.build_index()
 
 history = []
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/')
 def home():
-    query = request.form.getlist("q")
-    return render_template('home_page_template2.html', query = query)
+
+    return render_template('home_page_template2.html', history = history)
 
 @app.route('/search')
 def search():
     query = request.args.get('q', '')
-    query2 = request.form.getlist("q")
+    history.append(query)
+    if len(history) > 10:
+        history.pop(0)
     if query:
         urls = search_engine.search(query.split())
         return render_template('search_results_template.html', urls=urls, query=query)

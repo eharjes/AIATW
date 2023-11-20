@@ -39,9 +39,6 @@ class Crawler:
 
     def get_links(self, content, base_url):
         soup = BeautifulSoup(content, 'html.parser')
-        links = []
-        titles = []
-        titles.append(soup.title)
         for a_tag in soup.find_all('a', href=True):
             print(a_tag)
             href = a_tag['href']
