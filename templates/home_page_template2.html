@@ -93,17 +93,18 @@
             <button type="submit" id="search-button">Search</button>
         </form>
     </div>
-
+    
     <div id="search-history">
         <h1>Search History</h1>
         <form action="/search" method="get">
-            {% for search in history %}
-                <input type="button" name="q" value={{search}}>
-            {% endfor %}
-            <input type="button" name="q">
+            <ul>
+                {% for search in history %}
+                <li><input type="button" name="q" value={{search}}></li>
+                {% endfor %}      
+            </ul>
         </form>
-        
     </div>
+
 
     <div id="search-results">
         <div class="result">
