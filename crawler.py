@@ -39,14 +39,13 @@ class Crawler:
 
     def get_links(self, content, base_url):
         soup = BeautifulSoup(content, 'html.parser')
+        links = []
         for a_tag in soup.find_all('a', href=True):
             print(a_tag)
             href = a_tag['href']
             url = urljoin(base_url, href)
             if self.is_same_server(url):
                 links.append(url)
-        #print(links)
-        #print("##################################")
         return links
 
     def is_same_server(self, url):
