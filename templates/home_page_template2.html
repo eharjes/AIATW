@@ -22,6 +22,7 @@
             left: 5%;
         }
         #search-history {
+            text-align: left;
             position: relative;
             margin: 10px;
             margin-left: 60px;
@@ -93,16 +94,10 @@
         <form action="/search" method="get">
             <input type="text" id="search-box" name="q" placeholder="Enter Search here...">
             <button type="submit" id="search-button">Search</button>
-        </form>
-    </div>
-    
-    <div id="search-history">
-        <h4>Search History</h4>
-        <form action="/search" method="get">
-            <ul>
-                {% for search in history %}
-                <li><input type="button" name="q" value={{search}}></li>
-                {% endfor %}      
+            <ul id="search-history">
+                {%for search in history %}
+                <li><button type="submit" name="q" value="{{search}}">{{search}}</button></li>
+                {% endfor %}
             </ul>
         </form>
     </div>
