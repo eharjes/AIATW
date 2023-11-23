@@ -28,7 +28,14 @@ def get_recommendation(query):
         if english_dict.check(word):
             recommendations.append(word)
         else:
-            recommendations.append(english_dict.suggest(word))
+            best_distance = 999999
+            best_suggestion = ""
+            for suggestion in english_dict.suggest(word):
+                dist = distance(suggestion, word)
+                if dist < best_distance:
+                    best_distance = dist
+                    best_suggestion = suggestion
+            recommendations.append(best_suggestion)
     return " ".join(recommendations)
 
 @app.route('/')
