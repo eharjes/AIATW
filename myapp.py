@@ -15,20 +15,25 @@ def get_recommendation(query):
 
     query (string)          = word to get recommendation for
 
-    current_rec (string)    = recommended word (can match the given word)
+    Returns:
+
+    recommendations (list)    = joined string of recommended words (can match the given word(s))
     """
-    # initialize recommendation as empty string
-    recommendation = ""
+    # initialize recommendation as empty list with length of words in the query
+    queries = query.split()
+    recommendations = [None] * len(queries)
     # initialize best distance as very high so the first word checked always becomes the first recommendation
     best_dist = 99999999
-    # look through all words in the english dictionary and track which word has the currently lowest distance to the query
-    for word in english_dict:
-        current_dist = distance(query, word)
-        # if the current distance is smaller than the previously best distance update the recommendation and the best distance
-        if current_dist < best_dist:
-            best_dist = current_dist
-            recommendation = word
-    return recommendation
+    # look through all words in the english dictionary and track which word has the currently lowest distance to the query for each word in the query
+    for idx, input in enumerate(queries):
+        for word in english_dict:
+            current_dist = distance(input, word)
+            # if the current distance is smaller than the previously best distance update the recommendation and the best distance
+            if current_dist < best_dist:
+                best_dist = current_dist
+                recommendations[idx] = word
+        best_dist = 99999999
+    return " ".join(recommendations)
 
 @app.route('/')
 def home():
