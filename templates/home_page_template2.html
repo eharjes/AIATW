@@ -48,7 +48,7 @@
         #search-results {
             margin-top: 30px;
             position: relative;
-            top: 150px;
+            top: 100px;
             left: 50px;
         }
 
@@ -96,7 +96,7 @@
             <button type="submit" id="search-button">Search</button>
             <ul id="search-history">
                 {%for search in history %}
-                <li><button type="submit" name="q" value="{{search}}" onclick="update_query({{search}})">{{ search }}</button></li>
+                <li>{{ search }}</li>
                 {% endfor %}
             </ul>
         </form>

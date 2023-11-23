@@ -33,7 +33,7 @@ def get_recommendation(query):
 @app.route('/')
 def home():
 
-    return render_template('home_page_template2.html', history = history)
+    return render_template('home_page_template2.html', history = reversed(history))
 
 @app.route('/search')
 def search():
@@ -45,7 +45,7 @@ def search():
     recommendation = get_recommendation(query)
     if query:
         urls = search_engine.search(query.split())
-        return render_template('search_results_template.html', urls=urls, query=query, recommendation = recommendation)
+        return render_template('search_results_template.html', urls = urls, query = query, recommendation = recommendation)
     else:
         return '<p>Please enter a search term.</p>', 400
 
