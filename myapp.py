@@ -15,7 +15,8 @@ def home():
 @app.route('/search')
 def search():
     query = request.args.get('q', '')
-    history.append(query)
+    if query not in history:
+        history.append(query)
     if len(history) > 10:
         history.pop(0)
     length = len(history)
