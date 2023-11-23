@@ -2,3 +2,5 @@ requests
 beautifulsoup4
 flask
 whoosh
+Levenshtein
+english_dictionary
