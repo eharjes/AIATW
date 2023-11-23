@@ -96,12 +96,17 @@
             <button type="submit" id="search-button">Search</button>
             <ul id="search-history">
                 {%for search in history %}
-                <li><button type="submit" name="q" value="{{search}}">{{search}}</button></li>
+                <li><button type="submit" name="q" value="{{search}}" onclick="update_query({{search}})">{{ search }}</button></li>
                 {% endfor %}
             </ul>
         </form>
     </div>
 
+    <script>
+        function update_query(query) {
+            document.getElementById('search-box').value = query;
+        }
+    </script>
 
     <div id="search-results">
         <div class="result">

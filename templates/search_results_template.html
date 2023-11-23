@@ -30,8 +30,9 @@
     {% endfor %}
     </ul>
   {% else %}
-    <p>No results found for "{{ query }}" on the websites at hand. <p>
-    <p>Please try another query. </p>
+    <p>No results found for "{{ query }}" on the websites at hand. Did you mean "{{ recommendation }}"?<p>
+    <p>If your input matches the recommended word there are no search results for it.</p>
+    <p>Please try another query.</p>
   {% endif %}
   <form action="/" method="get">
     <button type="submit" id="search-button">Go Back to Search!</button>
