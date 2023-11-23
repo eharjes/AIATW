@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from Levenshtein import distance
 from english_dictionary.scripts.read_pickle import get_dict
+import enchant
 from searchengine import SearchEngine  # Assuming your search engine code is in search_engine.py
 
 app = Flask(__name__)
@@ -8,7 +9,7 @@ search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
 search_engine.build_index()
 
 history = []
-english_dict = get_dict()
+english_dict = enchant.Dict("en_US")
 
 def get_recommendation(query):
     """Returns closest (Levenshtein distance) word to the given word
@@ -21,18 +22,13 @@ def get_recommendation(query):
     """
     # initialize recommendation as empty list with length of words in the query
     queries = query.split()
-    recommendations = [None] * len(queries)
+    recommendations = []
     # initialize best distance as very high so the first word checked always becomes the first recommendation
-    best_dist = 99999999
-    # look through all words in the english dictionary and track which word has the currently lowest distance to the query for each word in the query
-    for idx, input in enumerate(queries):
-        for word in english_dict:
-            current_dist = distance(input, word)
-            # if the current distance is smaller than the previously best distance update the recommendation and the best distance
-            if current_dist < best_dist:
-                best_dist = current_dist
-                recommendations[idx] = word
-        best_dist = 99999999
+    for word in queries:
+        if english_dict.check(word):
+            recommendations.append(word)
+        else:
+            recommendations.append(english_dict.suggest(word))
     return " ".join(recommendations)
 
 @app.route('/')
