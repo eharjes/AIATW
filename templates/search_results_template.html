@@ -35,7 +35,7 @@
     {% endfor %}
     </ul>
     {% else %}
-    {% if query == recommendation %}
+    {% if recommendation == "" %}
       <p>No results found for "{{ query }}" on the websites at hand.<p>
       <p>Please try another query.</p>
     {% else %}
