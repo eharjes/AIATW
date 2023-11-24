@@ -62,7 +62,6 @@ class SearchEngine:
 
         # Use Whoosh's searcher
         with ix.searcher() as searcher:
-            # print(list(searcher.lexicon("content")))
 
             # Using the AndGroup to require all words in the query
             parser = QueryParser("content", ix.schema, group=AndGroup)
@@ -70,16 +69,25 @@ class SearchEngine:
             query_str = ' AND '.join(words)
             # Parse the query string
             query = parser.parse(query_str)
+
             # Perform the search
             results = searcher.search(query)
             # Collect the URLs from the results
             urls = [result['url'] for result in results]
 
-        return urls
+            word_occurrences = [0] * len(urls)
 
-if __name__ == "__main__":
-    engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
-    engine.build_index()  # Make sure this is commented out if the index is already built and you're just searching
-    search_words = ['platypus', 'mammal']
-    result = engine.search(search_words)
-    print(f'URLs containing all the words {search_words}: {result}')
+            # Iterate through the results and count word occurrences
+            for indx, result in enumerate(results):
+                content = result['content'].lower().split()  # Convert content to lowercase and split into words
+                for word in content:
+                    if word in words:
+                        word_occurrences[indx] += 1
+
+            # Convert the dictionary to a list of tuples and sort by count in descending order
+            # sorted_occurrences = sorted(word_occurrences.items(), key=lambda x: x[1], reverse=True)
+            sorted_occur_urls = sorted(zip(word_occurrences, urls), reverse=True)
+            sorted_urls = [x[1] for x in sorted_occur_urls]
+            sorted_occurrences = [x[0] for x in sorted_occur_urls]
+
+        return sorted_occur_urls

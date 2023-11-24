@@ -23,20 +23,26 @@
 </head>
 <body>
   <h1>Search Results</h1>
-  {% if urls %}
+  {% if urls_occurrences %}
     <ul>
-    {% for url in urls %}
-      <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
+    {% for number, url in urls_occurrences %}
+      <li>
+        <p>The searched term occured {{ number }} times on the following website.</p>
+        <a href="{{ url }}" target="_blank">{{ url }}</a>
+      </li>
+      <br>
+
     {% endfor %}
     </ul>
-  {% else %}
-  {% if query == recommendation %}
-    <p>No results found for "{{ query }}" on the websites at hand.<p>
-    <p>Please try another query.</p>
-  {% else %}
-    <p>No results found for "{{ query }}" on the websites at hand. Did you mean "{{ recommendation }}"?<p>
-  {% endif %}
-  {% endif %}
+    {% else %}
+    {% if query == recommendation %}
+      <p>No results found for "{{ query }}" on the websites at hand.<p>
+      <p>Please try another query.</p>
+    {% else %}
+      <p>No results found for "{{ query }}" on the websites at hand. Did you mean "{{ recommendation }}"?<p>
+    {% endif %}
+    {% endif %}
+
   <form action="/" method="get">
     <button type="submit" id="search-button">Go Back to Search!</button>
   </form>

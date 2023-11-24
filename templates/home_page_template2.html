@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -21,6 +22,7 @@
             top: 100px;
             left: 5%;
         }
+
         #search-history {
             text-align: left;
             position: relative;
@@ -48,7 +50,7 @@
         #search-results {
             margin-top: 30px;
             position: relative;
-            top: 100px;
+            top: 120px;
             left: 50px;
         }
 
@@ -82,7 +84,7 @@
 
     <div id="picture">
         <img
-             src= "{{url_for('static', filename='images/platypus.jpg')}}",
+             src= "{{url_for('static', filename='platypus.jpg')}}",
              width = "200",
              height = "200"
         />
@@ -95,8 +97,8 @@
             <input type="text" id="search-box" name="q" placeholder="Enter Search here...">
             <button type="submit" id="search-button">Search</button>
             <ul id="search-history">
-                {%for search in history %}
-                <li>{{ search }}</li>
+                {%for entry in history %}
+                <li>{{ entry }}</li>
                 {% endfor %}
             </ul>
         </form>
