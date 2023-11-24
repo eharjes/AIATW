@@ -1,7 +1,8 @@
 from flask import Flask, request, render_template
 from Levenshtein import distance
 from english_dictionary.scripts.read_pickle import get_dict
-import enchant
+import os
+import whoosh
 from searchengine import SearchEngine  # Assuming your search engine code is in search_engine.py
 
 app = Flask(__name__)
@@ -9,7 +10,6 @@ search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
 search_engine.build_index()
 
 history = []
-english_dict = enchant.Dict("en_US")
 
 def get_recommendation(query):
     """Returns closest (Levenshtein distance) word to the given word
@@ -50,7 +50,15 @@ def search():
         history.append(query)
     if len(history) > 10:
         history.pop(0)
-    recommendation = get_recommendation(query)
+    ix = search_engine.ix
+    words = query.split()
+    recommendation = []
+    with ix.searcher() as s:
+        
+        for word in words:
+            corrector = s.corrector()
+            recommendation.append(corrector.suggest(word, limit = 2))
+    print(recommendation)
     if query:
         urls = search_engine.search(query.split())
         return render_template('search_results_template.html', urls = urls, query = query, recommendation = recommendation)

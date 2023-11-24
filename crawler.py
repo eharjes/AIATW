@@ -41,7 +41,6 @@ class Crawler:
         soup = BeautifulSoup(content, 'html.parser')
         links = []
         for a_tag in soup.find_all('a', href=True):
-            print(a_tag)
             href = a_tag['href']
             url = urljoin(base_url, href)
             if self.is_same_server(url):
