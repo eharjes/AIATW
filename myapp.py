@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 from searchengine import SearchEngine  # Assuming your search engine code is in search_engine.py
+import whoosh
 
 app = Flask(__name__)
 search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
@@ -14,11 +15,18 @@ def home():
 @app.route('/search')
 def search():
     query = request.args.get('q', '')
+    recommendation = ""
     if query not in search_history:
         search_history.append(query)
     if len(search_history) > 10:
         search_history.pop(0)
-    recommendation = "hier könnte ihre recommendation stehen"
+    ix = search_engine.ix
+    qp = whoosh.qparser.QueryParser("content", ix.schema)
+    q = qp.parse(query)
+    with ix.searcher() as searcher:
+        corrected = searcher.correct_query(q, query)
+        if corrected.query != q:
+            recommendation = corrected.string
     if query:
         sorted_urls_occurrences = search_engine.search(query.split())
         return render_template('search_results_template.html', urls_occurrences=sorted_urls_occurrences, query=query, recommendation = recommendation)
