@@ -40,30 +40,41 @@
         .result-content {
             color: #666;
         }
+
+        /* Style for the description or content of each search result */
+        .context-content {
+          color: #666;
+          font-size: 14px;
+          font-style: italic;
+        }
   </style>
 </head>
 <body>
+
   <h1>Search Results</h1>
   {% if urls_occurrences %}
-    {% for number, url in urls_occurrences %}
-        <div class="result-box">
-          <div class="result-title">Result: Example Title</div>
-          <div class="result-content">
-            <p>The searched term occured {{ number }} times on the following website.</p>
-            <a href="{{ url }}" target="_blank">{{ url }}</a>
-            <script>
-              function showMessage(){
-                const href = "url";
-                var message = document.getElementById(query).value;
-                display_message.innerHTML = href + message;
-                display_message.href = href + message
-              }
-            </script>
-          </div>
-        </div>
-      <br>
+    {% for (number, url), one_context in context %}
 
-    {% endfor %}
+      <div class="result-box">
+        <div class="result-title">
+          <a href="{{url}}" target="the_frame" >This is the link to {{url[30:36]}}</a>
+        </div>
+
+        <div class="result-content">
+          <p>The searched term occured {{ number }} times on the following website:</p>
+          <a href="{{ url }}" target="_blank">This is the link to the website.</a>
+
+        </div>
+        <br>
+        <div class="context-content">
+          <p>"{{one_context}}"</p>
+        </div>
+
+        </div>
+        <br>
+
+      {% endfor %}
+
     {% else %}
     {% if recommendation == "" %}
       <p>No results found for "{{ query }}" on the websites at hand.<p>
@@ -78,3 +89,6 @@
   </form>
 </body>
 </html>
+
+
+

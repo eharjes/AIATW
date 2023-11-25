@@ -3,6 +3,7 @@ import os
 from whoosh.index import create_in, open_dir, exists_in
 from whoosh.fields import Schema, TEXT, ID
 from whoosh.qparser import QueryParser, AndGroup
+from bs4 import BeautifulSoup
 
 class SearchEngine:
     def __init__(self, start_url, max_pages, index_dir='indexdir'):
@@ -72,22 +73,40 @@ class SearchEngine:
 
             # Perform the search
             results = searcher.search(query)
+
+            processed_results = self.process_search_results(results)
             # Collect the URLs from the results
             urls = [result['url'] for result in results]
 
             word_occurrences = [0] * len(urls)
+            context = [0] * len(urls)
 
             # Iterate through the results and count word occurrences
             for indx, result in enumerate(results):
                 content = result['content'].lower().split()  # Convert content to lowercase and split into words
-                for word in content:
+                for spot, word in enumerate(content):
+
                     if word in words:
                         word_occurrences[indx] += 1
+                        context[indx] = content[spot-4: spot+5]
+                        context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
             # sorted_occurrences = sorted(word_occurrences.items(), key=lambda x: x[1], reverse=True)
             sorted_occur_urls = sorted(zip(word_occurrences, urls), reverse=True)
             sorted_urls = [x[1] for x in sorted_occur_urls]
             sorted_occurrences = [x[0] for x in sorted_occur_urls]
+            with_context = zip(sorted_occur_urls, context)
 
-        return sorted_occur_urls
+        return sorted_occur_urls, processed_results, with_context
+
+
+
+    def process_search_results(self, results):
+        processed_results = [dict(hit) for hit in results]
+        # if self.__stored_content:
+        highlights = [hit.highlights("content") for hit in results]
+        highlights = [BeautifulSoup(highlight, "html.parser").get_text() for highlight in highlights]
+        for i, highlight in enumerate(highlights):
+            processed_results[i]["highlight"] = highlight
+        return tuple(processed_results)
