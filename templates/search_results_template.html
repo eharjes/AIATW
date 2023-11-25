@@ -6,7 +6,7 @@
   <style>
 
         #search-button {
-          width: 30%;
+          width: 20%;
           text-align: center;
           background-color: #2B6521;
           display: inline-block;
@@ -19,21 +19,51 @@
           top: 102.5px;
           right: 50px;
         }
+        /* Style for the search result boxes */
+        .result-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            width: 65%;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style for the title of each search result */
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Style for the description or content of each search result */
+        .result-content {
+            color: #666;
+        }
   </style>
 </head>
 <body>
   <h1>Search Results</h1>
   {% if urls_occurrences %}
-    <ul>
     {% for number, url in urls_occurrences %}
-      <li>
-        <p>The searched term occured {{ number }} times on the following website.</p>
-        <a href="{{ url }}" target="_blank">{{ url }}</a>
-      </li>
+        <div class="result-box">
+          <div class="result-title">Result: Example Title</div>
+          <div class="result-content">
+            <p>The searched term occured {{ number }} times on the following website.</p>
+            <a href="{{ url }}" target="_blank">{{ url }}</a>
+            <script>
+              function showMessage(){
+                const href = "url";
+                var message = document.getElementById(query).value;
+                display_message.innerHTML = href + message;
+                display_message.href = href + message
+              }
+            </script>
+          </div>
+        </div>
       <br>
 
     {% endfor %}
-    </ul>
     {% else %}
     {% if recommendation == "" %}
       <p>No results found for "{{ query }}" on the websites at hand.<p>
