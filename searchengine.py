@@ -4,6 +4,9 @@ from whoosh.index import create_in, open_dir, exists_in
 from whoosh.fields import Schema, TEXT, ID
 from whoosh.qparser import QueryParser, AndGroup
 from bs4 import BeautifulSoup
+import re
+
+
 
 class SearchEngine:
     def __init__(self, start_url, max_pages, index_dir='indexdir'):
@@ -80,22 +83,29 @@ class SearchEngine:
 
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
+            empty = ['', ' ','\n' ]
 
             # Iterate through the results and count word occurrences
             for indx, result in enumerate(results):
-                content = result['content'].lower().split()  # Convert content to lowercase and split into words
-                for spot, word in enumerate(content):
+                print()
+                # content = result['content'].lower().split()  # Convert content to lowercase and split into words
+                content = re.split('(\W+?)', result['content'].lower())
+                content = [el for el in content if el not in empty]
 
+                for spot, word in enumerate(content):
                     if word in words:
+                        print(word)
                         word_occurrences[indx] += 1
                         context[indx] = content[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
             # sorted_occurrences = sorted(word_occurrences.items(), key=lambda x: x[1], reverse=True)
+            print(context)
             sorted_occur_urls = sorted(zip(word_occurrences, urls), reverse=True)
             sorted_urls = [x[1] for x in sorted_occur_urls]
             sorted_occurrences = [x[0] for x in sorted_occur_urls]
+            context = reversed(context)
             with_context = zip(sorted_occur_urls, context)
 
         return sorted_occur_urls, processed_results, with_context
