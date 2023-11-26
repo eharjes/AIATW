@@ -5,7 +5,7 @@ import whoosh
 # initialize all variables
 app = Flask(__name__)
 search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 4000)
-search_engine.build_index()
+# search_engine.build_index()
 search_history = []
 
 @app.route('/')
@@ -44,5 +44,10 @@ import traceback
 @app.errorhandler(500)
 def internal_error(exception):
    return "<pre>"+traceback.format_exc()+"</pre>"
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
 
 
