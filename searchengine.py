@@ -83,32 +83,32 @@ class SearchEngine:
 
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
-            empty = ['', ' ','\n' ]
+            empty = ['', ' ','\n', '<', '>' ]
 
             # Iterate through the results and count word occurrences
             for indx, result in enumerate(results):
-                print()
                 # content = result['content'].lower().split()  # Convert content to lowercase and split into words
                 content = re.split('(\W+?)', result['content'].lower())
                 content = [el for el in content if el not in empty]
 
                 for spot, word in enumerate(content):
                     if word in words:
-                        print(word)
+
                         word_occurrences[indx] += 1
                         context[indx] = content[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
-            # sorted_occurrences = sorted(word_occurrences.items(), key=lambda x: x[1], reverse=True)
-            print(context)
-            sorted_occur_urls = sorted(zip(word_occurrences, urls), reverse=True)
+            urls_context = zip(urls, context)
+            sorted_occur_urls = [0] * len(word_occurrences)
+
+            for i, (context_word, url) in enumerate(urls_context):
+                sorted_occur_urls[i] = [word_occurrences[i], url, context_word]
+
             sorted_urls = [x[1] for x in sorted_occur_urls]
             sorted_occurrences = [x[0] for x in sorted_occur_urls]
-            context = reversed(context)
-            with_context = zip(sorted_occur_urls, context)
 
-        return sorted_occur_urls, processed_results, with_context
+        return urls_context, processed_results, sorted_occur_urls
 
 
 

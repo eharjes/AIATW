@@ -52,8 +52,8 @@
 <body>
 
   <h1>Search Results</h1>
-  {% if urls_occurrences %}
-    {% for (number, url), one_context in context %}
+  {% if urls %}
+    {% for number, one_context, url in context %}
 
       <div class="result-box">
         <div class="result-title">

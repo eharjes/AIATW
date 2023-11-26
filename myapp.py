@@ -18,7 +18,7 @@ def search():
     query = request.args.get('q', '')
     if query:
         # find urls in our index
-        sorted_urls_occurrences, other_results, context = search_engine.search(query.split())
+        urls, other_results, context = search_engine.search(query.split())
         # initialize recommendation as empty string that only fills if correct_query() returns something different than the query
         recommendation = ""
         # expand search_history without duplicates
@@ -36,7 +36,7 @@ def search():
             # if our query is different from the with our index corrected one we get recommendations
             if corrected.query != q:
                 recommendation = corrected.string
-        return render_template('search_results_template.html', urls_occurrences=sorted_urls_occurrences, query=query, recommendation = recommendation, other_results = other_results, context=context)
+        return render_template('search_results_template.html', urls=urls, query=query, recommendation = recommendation, other_results = other_results, context=context)
     else:
         return '<p>Please enter a search term.</p>', 400
 
