@@ -39,5 +39,10 @@ def search():
         return render_template('search_results_template.html', urls=urls, query=query, recommendation = recommendation, other_results = other_results, context=context)
     else:
         return '<p>Please enter a search term.</p>', 400
+    
+import traceback
+@app.errorhandler(500)
+def internal_error(exception):
+   return "<pre>"+traceback.format_exc()+"</pre>"
 
 
