@@ -108,7 +108,7 @@ class SearchEngine:
             sorted_urls = [x[1] for x in sorted_occur_urls]
             sorted_occurrences = [x[0] for x in sorted_occur_urls]
 
-        return urls_context, processed_results, sorted_occur_urls
+        return sorted_occur_urls
 
 
 
