@@ -35,7 +35,7 @@ def search():
             # if our query is different from the with our index corrected one we get recommendations
             if corrected.query != q:
                 recommendation = corrected.string
-        return render_template('search_results_template.html',urls = urls, query = query, recommendation = recommendation)
+        return render_template('search_results_template.html',urls = urls, length = len(urls), query = query, recommendation = recommendation)
     else:
         return '<p>Please enter a search term.</p>', 400
 

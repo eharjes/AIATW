@@ -53,11 +53,12 @@
 
   <h1>Search Results</h1>
   {% if urls %}
+  <p>{{ length }} result/s found for {{ query }}</p>
     {% for number, one_context, url in urls %}
 
       <div class="result-box">
         <div class="result-title">
-          <a href="{{url}}" target="the_frame" >This is the link to {{url[30:36]}}</a>
+          <a href="{{url}}" target="the_frame" >{{url[30:36]}}</a>
         </div>
 
         <div class="result-content">
