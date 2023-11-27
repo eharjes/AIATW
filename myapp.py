@@ -26,27 +26,24 @@ def search():
     """
     # receive query
     query = request.args.get('q', '')
-    if query:
-        # find urls in our index
-        urls = search_engine.search(query.split())
-        # initialize recommendation as empty string that only fills if correct_query() returns something different than the query
-        recommendation = ""
-        # expand search_history without duplicates
-        if query not in search_history:
-            search_history.append(query)
-        # keep search_history to at most 10 entries
-        if len(search_history) > 10:
-            search_history.pop(0)
-        # use the previously created index for our recommendations (only used in html when the query does not return any urls)
-        qp = whoosh.qparser.QueryParser("content", search_engine.ix.schema)
-        q = qp.parse(query)
-        with search_engine.ix.searcher() as searcher:
-            corrected = searcher.correct_query(q, query)
-            # if our query is different from the with our index corrected one we get recommendations
-            if corrected.query != q:
-                recommendation = corrected.string
-        return render_template('search_results_template.html',urls = urls, length = len(urls), query = query, recommendation = recommendation)
-    else:
-        return '<p>Please enter a search term.</p>', 400
+    # find urls in our index
+    urls = search_engine.search(query.split())
+    # initialize recommendation as empty string that only fills if correct_query() returns something different than the query
+    recommendation = ""
+    # expand search_history without duplicates
+    if query not in search_history and query != "":
+        search_history.append(query)
+    # keep search_history to at most 10 entries
+    if len(search_history) > 10:
+        search_history.pop(0)
+    # use the previously created index for our recommendations (only used in html when the query does not return any urls)
+    qp = whoosh.qparser.QueryParser("content", search_engine.ix.schema)
+    q = qp.parse(query)
+    with search_engine.ix.searcher() as searcher:
+        corrected = searcher.correct_query(q, query)
+        # if our query is different from the with our index corrected one we get recommendations
+        if corrected.query != q:
+            recommendation = corrected.string
+    return render_template('search_results_template.html',urls = urls, length = len(urls), query = query, recommendation = recommendation)
 
 

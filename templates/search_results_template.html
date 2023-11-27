@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Search Results</title>
   <style>
-
+        /* Style for the search button */
         #search-button {
           width: 20%;
           text-align: center;
@@ -29,7 +29,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Style for the title of each search result */
+        /* Style for the title of each found result */
         .result-title {
             font-size: 18px;
             font-weight: bold;
@@ -52,13 +52,14 @@
 <body>
 
   <h1>Search Results</h1>
+  <!--if links for the given query were found present them-->
   {% if urls %}
   <p>{{ length }} result/s found for {{ query }}</p>
     {% for number, one_context, url in urls %}
 
       <div class="result-box">
         <div class="result-title">
-          <a href="{{url}}" target="the_frame" >{{url[30:36]}}</a>
+          <a href="{{url}}" target="the_frame" >{{url[30:35]}}</a>
         </div>
 
         <div class="result-content">
@@ -77,13 +78,15 @@
         <br>
 
       {% endfor %}
-
+    <!--if no links were found and no recommendation was found with the given index just give the option to go back to the search again-->
     {% else %}
     {% if recommendation == "" %}
       <p>No results found for "{{ query }}" on the websites at hand.<p>
       <p>Please try another query.</p>
+    <!--if recommendation/s were found they are presented-->
     {% else %}
-      <p>No results found for "{{ query }}" on the websites at hand. Did you mean "{{ recommendation }}"?<p>
+      <p>No results found for "{{ query }}" on the websites at hand.<p>
+      <p> The closest recommendation from the given websites is "{{ recommendation }}"</p>
     {% endif %}
     {% endif %}
 

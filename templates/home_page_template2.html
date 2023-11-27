@@ -5,15 +5,16 @@
     <meta charset="UTF-8">
     <title>My Search Engine</title>
     <style>
+        /* general style of the site */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-
+        /* position for test on the search container */
         #search-container {
             text-align: center;
         }
-
+        /* style of the search box */
         #search-box {
             width: 65%;
             padding: 10px;
@@ -22,7 +23,7 @@
             top: 100px;
             left: 5%;
         }
-
+        /* search history position and test size */
         #search-history {
             text-align: left;
             position: relative;
@@ -31,7 +32,7 @@
             font-size: 16px;
             top: 70px;
         }
-
+        /* style of the search button */
         #search-button {
             width: 15%;
             text-align: center;
@@ -46,23 +47,23 @@
             top: 102.5px;
             right: 5%;
         }
-
-        #search-results {
+        /* position for the footnote */
+        #footnote {
             margin-top: 30px;
             position: relative;
             top: 120px;
             left: 50px;
         }
 
-        .result {
+        .note {
             margin: 10px;
         }
 
-        .result h2 {
+        .note h2 {
             font-size: 16px;
         }
 
-        .result p {
+        .note p {
             font-size: 12px;
         }
     </style>
@@ -71,6 +72,7 @@
 
 
     <style>
+        /* position for the static picture */
         #picture {
             position: relative;
         }
@@ -90,12 +92,13 @@
         />
 
     </div>
-
+    <!--present the container to enter queries-->
     <div id="search-container">
         <h1>Search Engine</h1>
         <form action="search" method="get">
             <input type="text" id="search-box" name="q" placeholder="Enter Search here...">
             <button type="submit" id="search-button">Search</button>
+            <!--display up to the last 10 searched queries-->
             <ul id="search-history">
                 {%for entry in history %}
                 <li>{{ entry }}</li>
@@ -104,8 +107,8 @@
         </form>
     </div>
 
-    <div id="search-results">
-        <div class="result">
+    <div id="footnote">
+        <div class="note">
             <h2>AI and the Web</h2>
             <p>By Felix Japtok, Elias Harjes and Eva Kuth.</p>
         </div>
