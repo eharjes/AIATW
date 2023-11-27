@@ -3,19 +3,25 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
 class Crawler:
-    def __init__(self, start_url, max_pages):
+    """
+    A Crawler class to visit and extract links from a given start URL up to a specified number of pages.
+    """
+
+    def __init__(self, start_url: str, max_pages: int):
+        """
+        Initializes the Crawler with a starting URL and a maximum number of pages to visit.
+
+        :param start_url: The URL where the crawler will begin.
+        :param max_pages: The maximum number of pages to visit.
+        """
         self.start_url = start_url
         self.visited = set()
         self.max_pages = max_pages
-        self.session = requests.Session()  # Session object for the reuse of the same TCP connection
+        self.session = requests.Session()  # Session object for reusing the same TCP connection
         self.base_domain = urlparse(self.start_url).netloc
 
     def crawl(self):
-        """
-
-        :param: none specified, the intern parameters will be used
-        :return:
-        """
+        """Performs the crawling operation, visiting pages and collecting links."""
         stack = [self.start_url]
         while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
@@ -26,18 +32,29 @@ class Crawler:
                     links = self.get_links(content, url)
                     stack.extend(links)
 
-    def get_content(self, url):
+    def get_content(self, url: str) -> str:
+        """
+        Fetches the content from the specified URL.
+
+        :param url: The URL to fetch the content from.
+        :return: The content of the URL as text, or None if the request fails.
+        """
         try:
             response = self.session.get(url, timeout=5)
-            # Check the response header for 'text/html' content type
-            if (response.status_code != 404 and 'Content-Type' in response.headers and
-                    'text/html' in response.headers['Content-Type']):
+            if response.status_code == 200 and 'text/html' in response.headers.get('Content-Type', ''):
                 return response.text
         except requests.RequestException as e:
             print(f"Request failed: {e}")
         return None
 
-    def get_links(self, content, base_url):
+    def get_links(self, content: str, base_url: str) -> list:
+        """
+        Extracts all the links from the content of the given base URL.
+
+        :param content: The HTML content to extract links from.
+        :param base_url: The base URL to resolve relative links.
+        :return: A list of absolute URLs found within the content.
+        """
         soup = BeautifulSoup(content, 'html.parser')
         links = []
         for a_tag in soup.find_all('a', href=True):
@@ -47,11 +64,11 @@ class Crawler:
                 links.append(url)
         return links
 
-    def is_same_server(self, url):
+    def is_same_server(self, url: str) -> bool:
         """
-        Check whether domain of given URL matches the base domain
+        Checks if the domain of the given URL matches the base domain.
 
-        :param: new URL to check
-        :return: Whether URL's match (boolean)
+        :param url: The URL to check.
+        :return: True if the URL's domain matches the base domain; False otherwise.
         """
         return urlparse(url).netloc == self.base_domain
