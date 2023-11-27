@@ -10,10 +10,20 @@ search_history = []
 
 @app.route('/')
 def home():
+    """
+    Home page route that renders the main search page with search history.
+    
+    :return: Rendered template of the home page.
+    """
     return render_template('home_page_template2.html', history = reversed(search_history))
 
 @app.route('/search')
 def search():
+    """
+    Search route that processes the search query and renders the search results.
+    
+    :return: Rendered template of the search results page or an error message for an empty query.
+    """
     # receive query
     query = request.args.get('q', '')
     if query:
