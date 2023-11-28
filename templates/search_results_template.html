@@ -19,6 +19,13 @@
           top: 102.5px;
           right: 50px;
         }
+        #result-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            text-decoration: none;
+        }
+
         /* Style for the search result boxes */
         .result-box {
             border: 1px solid #ccc;
@@ -33,7 +40,7 @@
         .result-title {
             font-size: 18px;
             font-weight: bold;
-            color: #333;
+            color: #3b3b3b;
         }
 
         /* Style for the description or content of each search result */
@@ -58,8 +65,8 @@
     {% for number, one_context, url in urls %}
 
       <div class="result-box">
-        <div class="result-title">
-          <a href="{{url}}" target="the_frame" >{{url[30:35]}}</a>
+        <div class="result-title"> <!-- why target frame here before?-->
+          <a id = "result-title" href="{{url}}" target="_blank" >{{url[30:35]}}</a>
         </div>
 
         <div class="result-content">
