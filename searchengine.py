@@ -83,11 +83,12 @@ class SearchEngine:
 
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
-            empty = ['', ' ','\n', '<', '>' ]
+            empty = ['', ' ']
 
             # Iterate through the results and count word occurrences
             for indx, result in enumerate(results):
                 # content = result['content'].lower().split()  # Convert content to lowercase and split into words
+
                 content = re.split('(\W+?)', result['content'].lower())
                 content = [el for el in content if el not in empty]
 
@@ -97,6 +98,8 @@ class SearchEngine:
                         word_occurrences[indx] += 1
                         context[indx] = content[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
+
+
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
             urls_context = zip(urls, context)
