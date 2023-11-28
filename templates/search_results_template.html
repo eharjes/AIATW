@@ -70,7 +70,7 @@
         </div>
 
         <div class="result-content">
-          <p>The search term/s occured {{ number }} times on the following website:</p>
+          <p>The search term/s occured {{ number }} time/s on the following website:</p>
           <a href="{{ url }}" target="_blank">{{url}}</a>
 
         </div>
@@ -80,20 +80,20 @@
           <!-- <p>"{{one_context[:5]}}<b>{{one_context[5]}}</b>{{one_context[6:]}}"</p>-->
 
         </div>
-
         </div>
         <br>
-
       {% endfor %}
     <!--if no links were found and no recommendation was found with the given index just give the option to go back to the search again-->
     {% else %}
+
     {% if recommendation == "" %}
       <p>No results found for "{{ query }}" on the websites at hand.<p>
       <p>Please try another query.</p>
+
     <!--if recommendation/s were found they are presented-->
     {% else %}
       <p>No results found for "{{ query }}" on the websites at hand.<p>
-      <p> The closest recommendation from the given websites is "{{ recommendation }}"</p>
+      <p>The closest recommendation from the given websites is "{{ recommendation }}"</p>
     {% endif %}
     {% endif %}
 
