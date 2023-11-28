@@ -37,6 +37,7 @@ class SearchEngine:
             self.crawler.crawl()
             for url in self.crawler.visited:
                 content = self.crawler.get_content(url)
+                content = self.clean_text(content)
                 if content is not None:
                     writer.add_document(url=url, content=content)
             writer.commit()
@@ -75,12 +76,11 @@ class SearchEngine:
             query = parser.parse(query_str)
 
             # Perform the search
-            results = searcher.search(query)
+            results = searcher.search(query,limit=100)
 
             processed_results = self.process_search_results(results)
             # Collect the URLs from the results
             urls = [result['url'] for result in results]
-
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
             empty = ['', ' ']
@@ -88,13 +88,12 @@ class SearchEngine:
             # Iterate through the results and count word occurrences
             for indx, result in enumerate(results):
                 # content = result['content'].lower().split()  # Convert content to lowercase and split into words
-
-                content = re.split('(\W+?)', result['content'].lower())
-                content = [el for el in content if el not in empty]
+                soup = BeautifulSoup(result['content'], 'html.parser')
+                text_content = soup.get_text(separator=' ', strip=True).lower()
+                content = re.split(r'\W+', text_content)
 
                 for spot, word in enumerate(content):
                     if word in words:
-
                         word_occurrences[indx] += 1
                         context[indx] = content[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
@@ -104,13 +103,37 @@ class SearchEngine:
             sorted_occur_urls = [0] * len(word_occurrences)
 
             for i, (context_word, url) in enumerate(urls_context):
-                sorted_occur_urls[i] = [word_occurrences[i], url, context_word]
-
+                # check if word occured at all
+                if word_occurrences[i] > 0:
+                    sorted_occur_urls[i] = [word_occurrences[i], url, context_word]
+            sorted_occur_urls = [elem for elem in sorted_occur_urls if elem != 0]
             sorted_occur_urls = sorted(sorted_occur_urls, reverse = True)
-            sorted_urls = [x[1] for x in sorted_occur_urls]
-            sorted_occurrences = [x[0] for x in sorted_occur_urls]
+            # sorted_urls = [x[1] for x in sorted_occur_urls]
+            # sorted_occurrences = [x[0] for x in sorted_occur_urls]
 
         return sorted_occur_urls
+    
+    def clean_text(self, html_content: str) -> str:
+        """
+        Clean the HTML content and extract human-readable text.
+
+        :param html_content: The HTML content to be cleaned.
+        :return: Cleaned, human-readable text.
+        """
+        # Parse HTML content
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Remove script and style elements
+        for script_or_style in soup(['script', 'style']):
+            script_or_style.decompose()
+
+        # Get text and replace HTML entities
+        text = soup.get_text()
+
+        # Replace multiple spaces with a single space and strip leading/trailing whitespace
+        text = re.sub(r'\s+', ' ', text).strip()
+
+        return text
 
 
 

@@ -31,6 +31,8 @@ class Crawler:
                 if content is not None:
                     links = self.get_links(content, url)
                     stack.extend(links)
+        
+        print('visited', self.visited)
 
     def get_content(self, url: str) -> str:
         """
