@@ -27,7 +27,8 @@ def search():
     # receive query
     query = request.args.get('q', '')
     # find urls in our index
-    urls = search_engine.search(query.split())
+    urls, titles = search_engine.search(query.split())
+    print("this is titles: " + str(titles))
     # initialize recommendation as empty string that only fills if correct_query() returns something different than the query
     recommendation = ""
     # expand search_history without duplicates

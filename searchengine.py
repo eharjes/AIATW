@@ -15,7 +15,8 @@ class SearchEngine:
         # Define the schema for indexing
         self.schema = Schema(
             url=ID(stored=True, unique=True),
-            content=TEXT(stored=True)
+            content=TEXT(stored=True),
+            titles=TEXT(stored=True)
         )
         # Create or open the index directory
         if not os.path.exists(self.index_dir):
@@ -36,9 +37,9 @@ class SearchEngine:
             writer = self.ix.writer()
             self.crawler.crawl()
             for url in self.crawler.visited:
-                content = self.crawler.get_content(url)
-                if content is not None:
-                    writer.add_document(url=url, content=content)
+                if self.crawler.get_content(url) is not None:
+                    content, titles = self.crawler.get_content(url)
+                    writer.add_document(url=url, content=content, titles = str(titles))
             writer.commit()
     
     def is_index_built(self):
@@ -76,7 +77,6 @@ class SearchEngine:
 
             # Perform the search
             results = searcher.search(query)
-
             processed_results = self.process_search_results(results)
             # Collect the URLs from the results
             urls = [result['url'] for result in results]
@@ -84,12 +84,15 @@ class SearchEngine:
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
             empty = ['', ' ','\n', '<', '>' ]
+            titles = []
 
             # Iterate through the results and count word occurrences
             for indx, result in enumerate(results):
                 # content = result['content'].lower().split()  # Convert content to lowercase and split into words
                 content = re.split('(\W+?)', result['content'].lower())
                 content = [el for el in content if el not in empty]
+
+                titles.append(result['titles'])
 
                 for spot, word in enumerate(content):
                     if word in words:
@@ -109,7 +112,7 @@ class SearchEngine:
             sorted_urls = [x[1] for x in sorted_occur_urls]
             sorted_occurrences = [x[0] for x in sorted_occur_urls]
 
-        return sorted_occur_urls
+        return sorted_occur_urls, titles
 
 
 

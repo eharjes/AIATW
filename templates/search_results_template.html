@@ -25,6 +25,9 @@
             color: #000000;
             text-decoration: none;
         }
+        #result-link{
+            font-size: 12px;
+        }
 
         /* Style for the search result boxes */
         .result-box {
@@ -71,7 +74,7 @@
 
         <div class="result-content">
           <p>The search term/s occured {{ number }} time/s on the following website:</p>
-          <a href="{{ url }}" target="_blank">{{url}}</a>
+          <a id = "result-link" href="{{ url }}" target="_blank">{{url}}</a>
 
         </div>
         <br>

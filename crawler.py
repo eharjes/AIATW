@@ -27,8 +27,9 @@ class Crawler:
             url = stack.pop()
             if url not in self.visited:
                 self.visited.add(url)
-                content = self.get_content(url)
-                if content is not None:
+                if not(self.get_content(url) == None):
+                    content, _ = self.get_content(url)
+                # if content is not None:
                     links = self.get_links(content, url)
                     stack.extend(links)
 
@@ -42,9 +43,16 @@ class Crawler:
         try:
             response = self.session.get(url, timeout=5)
             if response.status_code == 200 and 'text/html' in response.headers.get('Content-Type', ''):
-                return response.text
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                # Find the <title> tag
+                title_tag = soup.find('title')
+                #print(title_tag)
+                #print(response.text)
+                return response.text, title_tag
         except requests.RequestException as e:
             print(f"Request failed: {e}")
+        print("it is none?!")
         return None
 
     def get_links(self, content: str, base_url: str) -> list:
