@@ -55,15 +55,15 @@
   <!--if links for the given query were found present them-->
   {% if urls %}
   <p>{{ length }} result/s found for {{ query }}</p>
-    {% for number, one_context, url in urls %}
+    {% for word_occur, one_context, url, title in urls %}
 
       <div class="result-box">
         <div class="result-title">
-          <a href="{{url}}" target="the_frame" >{{url[30:35]}}</a>
+          <a href="{{url}}" target="the_frame" >{{title}}</a>
         </div>
 
         <div class="result-content">
-          <p>The searched term occured {{ number }} times on the following website:</p>
+          <p>The searched term occured {{ word_occur }} times on the following website:</p>
           <a href="{{ url }}" target="_blank">{{url}}</a>
 
         </div>

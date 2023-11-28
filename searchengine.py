@@ -5,6 +5,8 @@ from whoosh.fields import Schema, TEXT, ID
 from whoosh.qparser import QueryParser, AndGroup
 from bs4 import BeautifulSoup
 import re
+import requests
+
 
 
 
@@ -78,7 +80,7 @@ class SearchEngine:
             results = searcher.search(query)
 
             processed_results = self.process_search_results(results)
-            print(processed_results)
+
 
             # Collect the URLs from the results
             urls = [result['url'] for result in processed_results]
@@ -103,16 +105,21 @@ class SearchEngine:
 
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
-            urls_context = zip(urls, context)
-            sorted_occur_urls = [0] * len(word_occurrences)
+            context_urls = zip(context, urls)
+            word_con_urls_tit = [0] * len(word_occurrences)
 
-            for i, (context_word, url) in enumerate(urls_context):
-                sorted_occur_urls[i] = [word_occurrences[i], url, context_word]
+            for i, (context_word, url) in enumerate(context_urls):
+                response = requests.get(url)
+                soup = BeautifulSoup(response.content, 'html.parser')
+                title = soup.title.string
+                word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
 
-            sorted_urls = [x[1] for x in sorted_occur_urls]
-            sorted_occurrences = [x[0] for x in sorted_occur_urls]
 
-        return sorted_occur_urls
+            word_con_urls_tit = sorted(word_con_urls_tit, reverse=True)
+            sorted_urls = [x[1] for x in word_con_urls_tit]
+            sorted_occurrences = [x[0] for x in word_con_urls_tit]
+
+        return word_con_urls_tit
 
 
 
