@@ -84,19 +84,12 @@ class SearchEngine:
             # Collect the URLs from the results
             urls = [result['url'] for result in processed_results]
 
-            # response = requests.get(url)
-            # soup = BeautifulSoup(response.content, 'html.parser')
-            # soup_text = soup.get_text()
-            #
-            # split_soup = soup_text.split()
-
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
             empty = ['', ' ']
 
             # Iterate through the results and count word occurrences
             for indx, (result, url) in enumerate(zip(processed_results, urls)):
-                print(indx)
                 # content = result['content'].lower().split()  # Convert content to lowercase and split into words
                 content = re.split('(\W+?)', result['content'].lower())
                 content = [el for el in content if el not in empty]
@@ -108,7 +101,6 @@ class SearchEngine:
 
                 for spot, word in enumerate(split_soup):
                     if word in words:
-
                         word_occurrences[indx] += 1
                         context[indx] = split_soup[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
@@ -136,7 +128,6 @@ class SearchEngine:
 
             #
             word_con_urls_tit = sorted(word_con_urls_tit, reverse=True)
-            print(word_con_urls_tit)
             sorted_urls = [x[1] for x in word_con_urls_tit]
             sorted_occurrences = [x[0] for x in word_con_urls_tit]
 
