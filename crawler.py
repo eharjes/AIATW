@@ -19,6 +19,7 @@ class Crawler:
         self.max_pages = max_pages
         self.session = requests.Session()  # Session object for reusing the same TCP connection
         self.base_domain = urlparse(self.start_url).netloc
+        print(urlparse(self.start_url).netloc)
 
     def crawl(self):
         """Performs the crawling operation, visiting pages and collecting links."""
