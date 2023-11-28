@@ -4,7 +4,7 @@ import whoosh
 
 # initialize all variables
 app = Flask(__name__)
-search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 10)
+search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 100)
 search_engine.build_index()
 search_history = []
 
@@ -45,12 +45,3 @@ def search():
         if corrected.query != q:
             recommendation = corrected.string
     return render_template('search_results_template.html',urls = urls, length = len(urls), query = query, recommendation = recommendation)
-
-import traceback
-@app.errorhandler(500)
-def internal_error(exception):
-   return "<pre>"+traceback.format_exc()+"</pre>"
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('404.html'), 404
