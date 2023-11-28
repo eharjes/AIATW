@@ -55,7 +55,7 @@ class SearchEngine:
             with ix.searcher() as searcher:
                 return searcher.doc_count() > 0
         return False
-    
+
     def search(self, words):
         """
         Search for pages that contain all the search words.
@@ -106,24 +106,10 @@ class SearchEngine:
                         context[indx] = " ".join(context[indx])
 
 
-
             # Convert the dictionary to a list of tuples and sort by count in descending order
             context_urls = zip(context, urls)
-            word_con_urls_tit = [0] * len(word_occurrences)
 
-            for i, (context_word, url) in enumerate(context_urls):
-                soup = BeautifulSoup(requests.get(url).content, 'html.parser')
-                title = soup.title.string
-                soup_text = soup.get_text()
-
-                if word_occurrences[i] > 0:
-                    word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
-
-            word_con_urls_tit = [i for i in word_con_urls_tit if i != 0]
-            word_con_urls_tit = sorted(word_con_urls_tit, reverse=True)
-
-            sorted_urls = [x[1] for x in word_con_urls_tit]
-            sorted_occurrences = [x[0] for x in word_con_urls_tit]
+            word_con_urls_tit = self.get_merged_list(context_urls, word_occurrences)
 
         return word_con_urls_tit
 
@@ -137,3 +123,19 @@ class SearchEngine:
         for i, highlight in enumerate(highlights):
             processed_results[i]["highlight"] = highlight
         return tuple(processed_results)
+
+
+    def get_merged_list(self, context_urls, word_occurrences):
+        word_con_urls_tit = [0] * len(word_occurrences)
+
+        for i, (context_word, url) in enumerate(context_urls):
+            soup = BeautifulSoup(requests.get(url).content, 'html.parser')
+            title = soup.title.string
+
+            if word_occurrences[i] > 0:
+                word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
+
+        word_con_urls_tit = [i for i in word_con_urls_tit if i != 0]
+        word_con_urls_tit = sorted(word_con_urls_tit, reverse=True)
+
+        return word_con_urls_tit
