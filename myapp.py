@@ -4,7 +4,7 @@ import whoosh
 
 # initialize all variables
 app = Flask(__name__)
-search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 10)
+search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 100)
 search_engine.build_index()
 search_history = []
 
@@ -12,7 +12,7 @@ search_history = []
 def home():
     """
     Home page route that renders the main search page with search history.
-    
+
     :return: Rendered template of the home page.
     """
     return render_template('home_page_template2.html', history = reversed(search_history))
@@ -21,7 +21,7 @@ def home():
 def search():
     """
     Search route that processes the search query and renders the search results.
-    
+
     :return: Rendered template of the search results page or an error message for an empty query.
     """
     # receive query
@@ -45,12 +45,3 @@ def search():
         if corrected.query != q:
             recommendation = corrected.string
     return render_template('search_results_template.html',urls = urls, length = len(urls), query = query, recommendation = recommendation)
-
-import traceback
-@app.errorhandler(500)
-def internal_error(exception):
-   return "<pre>"+traceback.format_exc()+"</pre>"
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('404.html'), 404
