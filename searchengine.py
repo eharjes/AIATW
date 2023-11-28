@@ -106,6 +106,7 @@ class SearchEngine:
                         context[indx] = " ".join(context[indx])
 
 
+
             # Convert the dictionary to a list of tuples and sort by count in descending order
             context_urls = zip(context, urls)
             word_con_urls_tit = [0] * len(word_occurrences)
@@ -114,20 +115,13 @@ class SearchEngine:
                 soup = BeautifulSoup(requests.get(url).content, 'html.parser')
                 title = soup.title.string
                 soup_text = soup.get_text()
-                word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
 
+                if word_occurrences[i] > 0:
+                    word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
 
-            # print(split_soup.find_next_sibling("platypus"))
-
-            # see_also = soup.select("platypus")
-            # print("AAAA")
-            # print(see_also)
-            # ul = soup_text.find_next_sibling("platypus")
-            # print(ul)
-            # print(soup.find('strong', text='platypus').next_sibling.strip())
-
-            #
+            word_con_urls_tit = [i for i in word_con_urls_tit if i != 0]
             word_con_urls_tit = sorted(word_con_urls_tit, reverse=True)
+
             sorted_urls = [x[1] for x in word_con_urls_tit]
             sorted_occurrences = [x[0] for x in word_con_urls_tit]
 
