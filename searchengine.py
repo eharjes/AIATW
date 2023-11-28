@@ -105,6 +105,7 @@ class SearchEngine:
             for i, (context_word, url) in enumerate(urls_context):
                 sorted_occur_urls[i] = [word_occurrences[i], url, context_word]
 
+            sorted_occur_urls = sorted(sorted_occur_urls, reverse = True)
             sorted_urls = [x[1] for x in sorted_occur_urls]
             sorted_occurrences = [x[0] for x in sorted_occur_urls]
 
