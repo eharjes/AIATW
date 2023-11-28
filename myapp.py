@@ -1,10 +1,10 @@
 from flask import Flask, request, render_template
-from searchengine import SearchEngine  # Assuming your search engine code is in search_engine.py
+from searchengine import SearchEngine  # Assuming your search engine code is in searchengine.py
 import whoosh
 
 # initialize all variables
 app = Flask(__name__)
-search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 100)
+search_engine = SearchEngine('https://vm009.rz.uos.de/crawl/index.html', 100)
 search_engine.build_index()
 search_history = []
 
