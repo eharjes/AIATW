@@ -46,4 +46,11 @@ def search():
             recommendation = corrected.string
     return render_template('search_results_template.html',urls = urls, length = len(urls), query = query, recommendation = recommendation)
 
+import traceback
+@app.errorhandler(500)
+def internal_error(exception):
+   return "<pre>"+traceback.format_exc()+"</pre>"
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
