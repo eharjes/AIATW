@@ -99,8 +99,6 @@ class SearchEngine:
                         context[indx] = content[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
 
-
-
             # Convert the dictionary to a list of tuples and sort by count in descending order
             urls_context = zip(urls, context)
             sorted_occur_urls = [0] * len(word_occurrences)
