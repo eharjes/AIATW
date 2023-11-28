@@ -78,15 +78,17 @@ class SearchEngine:
             results = searcher.search(query)
 
             processed_results = self.process_search_results(results)
+            print(processed_results)
+
             # Collect the URLs from the results
-            urls = [result['url'] for result in results]
+            urls = [result['url'] for result in processed_results]
 
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
             empty = ['', ' ']
 
             # Iterate through the results and count word occurrences
-            for indx, result in enumerate(results):
+            for indx, result in enumerate(processed_results):
                 # content = result['content'].lower().split()  # Convert content to lowercase and split into words
                 content = re.split('(\W+?)', result['content'].lower())
                 content = [el for el in content if el not in empty]
@@ -106,8 +108,6 @@ class SearchEngine:
 
             for i, (context_word, url) in enumerate(urls_context):
                 sorted_occur_urls[i] = [word_occurrences[i], url, context_word]
-
-
 
             sorted_urls = [x[1] for x in sorted_occur_urls]
             sorted_occurrences = [x[0] for x in sorted_occur_urls]
