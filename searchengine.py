@@ -65,14 +65,20 @@ class SearchEngine:
         """
         # Open the existing index directory
         ix = open_dir(self.index_dir)
+        print(words)
+
+        words = [word.lower() for word in words.split()]
 
         # Use Whoosh's searcher
         with ix.searcher() as searcher:
+
 
             # Using the AndGroup to require all words in the query
             parser = QueryParser("content", ix.schema, group=AndGroup)
             # Create a query string that includes all words
             query_str = ' AND '.join(words)
+            print(words)
+            print(query_str)
             # Parse the query string
             query = parser.parse(query_str)
 
@@ -98,7 +104,7 @@ class SearchEngine:
                 soup_text = soup.get_text()
                 texts = soup.findAll(text=True)
                 # split_soup = soup_text.split()
-                print(texts)
+                # print(texts)
                 visible_texts = filter(tag_visible, texts)
 
                 visible_texts_soup = u" ".join(t.strip() for t in visible_texts)
