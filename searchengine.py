@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 import re
 import numpy as np
 import requests
+from urllib import request
+
+
 
 
 
@@ -102,18 +105,25 @@ class SearchEngine:
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
             urls_context = zip(urls, context)
-            sorted_occur_urls = [0] * len(word_occurrences)
+            word_con_urls_tit = [0] * len(word_occurrences)
 
             for i, (context_word, url) in enumerate(urls_context):
                 # check if word occured at all
-                if word_occurrences[i] > 0:
-                    sorted_occur_urls[i] = [word_occurrences[i], url, context_word]
-            sorted_occur_urls = [elem for elem in sorted_occur_urls if elem != 0]
-            sorted_occur_urls = sorted(sorted_occur_urls, reverse = True)
-            # sorted_urls = [x[1] for x in sorted_occur_urls]
-            # sorted_occurrences = [x[0] for x in sorted_occur_urls]
+                html = urllib.urlopen(url)
 
-        return sorted_occur_urls
+                soup_for_title = BeautifulSoup(html, 'html.parser')
+                # soup_for_title = soup_for_title.content
+                # title = soup_for_title.title.string
+                title = soup_for_title.find('title')
+
+                if word_occurrences[i] > 0:
+                    word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
+            word_con_urls_tit = [elem for elem in word_con_urls_tit if elem != 0]
+            word_con_urls_tit = sorted(word_con_urls_tit, reverse = True)
+            # sorted_urls = [x[1] for x in word_con_urls_tit]
+            # sorted_occurrences = [x[0] for x in word_con_urls_tit]
+
+        return word_con_urls_tit
     
     def clean_text(self, html_content: str) -> str:
         """
