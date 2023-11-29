@@ -6,7 +6,7 @@ from whoosh.qparser import QueryParser, AndGroup
 from bs4 import BeautifulSoup
 import re
 import requests
-
+from bs4.element import Comment
 
 
 
@@ -78,7 +78,6 @@ class SearchEngine:
 
             # Perform the search
             results = searcher.search(query)
-
             processed_results = self.process_search_results(results)
 
             # Collect the URLs from the results
@@ -91,20 +90,33 @@ class SearchEngine:
             # Iterate through the results and count word occurrences
             for indx, (result, url) in enumerate(zip(processed_results, urls)):
                 # content = result['content'].lower().split()  # Convert content to lowercase and split into words
-                content = re.split('(\W+?)', result['content'].lower())
-                content = [el for el in content if el not in empty]
+                # content = re.split('(\W+?)', result['content'].lower())
+                # content = [el for el in content if el not in empty]
 
                 response = requests.get(url)
                 soup = BeautifulSoup(response.content, 'html.parser')
                 soup_text = soup.get_text()
-                split_soup = soup_text.split()
+                texts = soup.findAll(text=True)
+                # split_soup = soup_text.split()
+                print(texts)
+                visible_texts = filter(tag_visible, texts)
 
-                for spot, word in enumerate(split_soup):
-                    if word in words:
+                visible_texts_soup = u" ".join(t.strip() for t in visible_texts)
+                split_soup = visible_texts_soup.split()
+                split_soup_lower = [word.lower() for word in visible_texts_soup.split()]
+
+
+
+                for spot, (word_lower, word) in enumerate(zip(split_soup_lower, split_soup)):
+                    if word_lower in words:
                         word_occurrences[indx] += 1
                         context[indx] = split_soup[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
 
+                print(word_occurrences)
+                print(url)
+                print()
+                print()
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
             context_urls = zip(context, urls)
@@ -140,4 +152,11 @@ class SearchEngine:
 
         return word_con_urls_tit
 
+
+def tag_visible(element):
+    if element.parent.name in ['style', 'script', 'head', 'meta', 'title', '[document]']:
+        return False
+    if isinstance(element, Comment):
+        return False
+    return True
 
