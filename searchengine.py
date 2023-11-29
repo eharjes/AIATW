@@ -109,12 +109,18 @@ class SearchEngine:
 
             for i, (context_word, url) in enumerate(urls_context):
                 # check if word occured at all
-                html = urllib.urlopen(url)
-
-                soup_for_title = BeautifulSoup(html, 'html.parser')
+                # html = urllib.urlopen(url)
+                #
+                print("AAAAA")
+                print(url)
+                print(context_word)
+                response = requests.get(url)
+                soup_title = BeautifulSoup(response.content, 'html.parser')
+                title = soup_title.title.string
+                # soup_for_title = BeautifulSoup(html, 'html.parser')
                 # soup_for_title = soup_for_title.content
                 # title = soup_for_title.title.string
-                title = soup_for_title.find('title')
+                # title = soup_for_title.find('title')
 
                 if word_occurrences[i] > 0:
                     word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
