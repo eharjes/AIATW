@@ -98,7 +98,6 @@ class SearchEngine:
                 soup = BeautifulSoup(response.content, 'html.parser')
                 soup_text = soup.get_text()
                 split_soup = soup_text.split()
-                print(soup_text.prettify())
 
                 for spot, word in enumerate(split_soup):
                     if word in words:
@@ -140,3 +139,5 @@ class SearchEngine:
         word_con_urls_tit = sorted(word_con_urls_tit, reverse=True)
 
         return word_con_urls_tit
+
+
