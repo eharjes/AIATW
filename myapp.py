@@ -4,7 +4,7 @@ import whoosh
 
 # initialize all variables
 app = Flask(__name__)
-search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 50) # https://vm009.rz.uos.de/crawl/index.html, https://en.wikipedia.org/wiki/Home_page, https://www.nytimes.com/ https://en.wikipedia.org/wiki/Artificial_intelligence
+search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 100) # use https://vm009.rz.uos.de/crawl/index.html or https://en.wikipedia.org/wiki/Home_page
 search_engine.build_index()
 search_history = []
 

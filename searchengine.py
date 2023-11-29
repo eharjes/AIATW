@@ -121,8 +121,8 @@ class SearchEngine:
                         context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
-            urls_context = zip(urls, context)
-            sorted_occur_urls = [0] * len(word_occurrences)
+            context_urls = zip(context, urls)
+            word_con_urls_tit = [0] * len(word_occurrences)
 
             for i, (context_word, url) in enumerate(urls_context):
                 # check if word occured at all
