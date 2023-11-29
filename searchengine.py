@@ -5,6 +5,7 @@ from whoosh.fields import Schema, TEXT, ID
 from whoosh.qparser import QueryParser, AndGroup
 from bs4 import BeautifulSoup
 import re
+import numpy as np
 
 
 
@@ -78,6 +79,27 @@ class SearchEngine:
             # Perform the search
             results = searcher.search(query,limit=100)
 
+            # occur_urls = []
+            # for result in results:
+            #     url = result['url']
+            #     soup = BeautifulSoup(result['content'], 'html.parser')
+            #     text_content = soup.get_text(separator=' ', strip=True).lower()
+            #     content = re.split(r'\W+', text_content)
+
+            #     query_words = np.array(words)
+            #     content_words = np.array(content)
+            #     # Find where items in np_list2 are in np_list1
+            #     matches = np.isin(content_words, query_words)
+
+            #     # Get indices of matches and counts
+            #     indices = np.where(matches)[0]
+            #     count_words = np.sum(matches)
+            #     context_list = content[indices[0]-4: indices[0]+5]
+            #     context_text = ' '.join(context_list)
+            #     occur_urls.append([count_words, context_text, url])
+            #     sorted_occur_urls = sorted(occur_urls, key=lambda x: x[0], reverse=True)
+
+
             processed_results = self.process_search_results(results)
             # Collect the URLs from the results
             urls = [result['url'] for result in results]
@@ -91,7 +113,7 @@ class SearchEngine:
                 soup = BeautifulSoup(result['content'], 'html.parser')
                 text_content = soup.get_text(separator=' ', strip=True).lower()
                 content = re.split(r'\W+', text_content)
-
+                
                 for spot, word in enumerate(content):
                     if word in words:
                         word_occurrences[indx] += 1
@@ -121,19 +143,21 @@ class SearchEngine:
         :return: Cleaned, human-readable text.
         """
         # Parse HTML content
-        soup = BeautifulSoup(html_content, 'html.parser')
+        # only execute if there is any content at all
+        if html_content is not None:
+            soup = BeautifulSoup(html_content, 'html.parser')
 
-        # Remove script and style elements
-        for script_or_style in soup(['script', 'style']):
-            script_or_style.decompose()
+            # Remove script and style elements
+            for script_or_style in soup(['script', 'style']):
+                script_or_style.decompose()
 
-        # Get text and replace HTML entities
-        text = soup.get_text()
+            # Get text and replace HTML entities
+            html_content = soup.get_text()
 
-        # Replace multiple spaces with a single space and strip leading/trailing whitespace
-        text = re.sub(r'\s+', ' ', text).strip()
+            # Replace multiple spaces with a single space and strip leading/trailing whitespace
+            html_content = re.sub(r'\s+', ' ', html_content).strip()
 
-        return text
+        return html_content
 
 
 
