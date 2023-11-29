@@ -60,9 +60,9 @@
 
   <h1>Search Results</h1>
   <!--if links for the given query were found present them-->
-  {% if urls %}
+  {% if word_con_urls_tit %}
   <p>{{ length }} result/s found for "{{ query }}"</p>
-    {% for word_occur, one_context, url, title in urls %}
+    {% for word_occur, one_context, url, title in word_con_urls_tit %}
 
       <div class="result-box">
         <div class="result-title">

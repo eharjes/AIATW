@@ -7,8 +7,6 @@ from bs4 import BeautifulSoup
 import re
 import numpy as np
 import requests
-from urllib import request
-
 
 
 
@@ -104,28 +102,19 @@ class SearchEngine:
                         context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
-            urls_context = zip(urls, context)
+            urls_context = zip(context, urls)
             word_con_urls_tit = [0] * len(word_occurrences)
 
             for i, (context_word, url) in enumerate(urls_context):
-                # check if word occured at all
-                # html = urllib.urlopen(url)
-                #
-                print("AAAAA")
-                print(url)
-                print(context_word)
-                response = requests.get(url)
-                soup_title = BeautifulSoup(response.content, 'html.parser')
+
+                soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
                 title = soup_title.title.string
-                # soup_for_title = BeautifulSoup(html, 'html.parser')
-                # soup_for_title = soup_for_title.content
-                # title = soup_for_title.title.string
-                # title = soup_for_title.find('title')
 
                 if word_occurrences[i] > 0:
                     word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
             word_con_urls_tit = [elem for elem in word_con_urls_tit if elem != 0]
             word_con_urls_tit = sorted(word_con_urls_tit, reverse = True)
+
             # sorted_urls = [x[1] for x in word_con_urls_tit]
             # sorted_occurrences = [x[0] for x in word_con_urls_tit]
 
