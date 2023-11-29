@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, unquote
+import re
 
 class Crawler:
     """
@@ -25,12 +26,14 @@ class Crawler:
         stack = [self.start_url]
         while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
-            if url not in self.visited:
+            if url not in self.visited and self.is_interesting_page(url):
                 self.visited.add(url)
                 content = self.get_content(url)
                 if content is not None:
                     links = self.get_links(content, url)
                     stack.extend(links)
+        
+        print('visited', self.visited)
 
     def get_content(self, url: str) -> str:
         """
@@ -49,7 +52,7 @@ class Crawler:
 
     def get_links(self, content: str, base_url: str) -> list:
         """
-        Extracts all the links from the content of the given base URL.
+        Extracts all the links from the content of the given base URL and filters out non-interesting links.
 
         :param content: The HTML content to extract links from.
         :param base_url: The base URL to resolve relative links.
@@ -72,3 +75,38 @@ class Crawler:
         :return: True if the URL's domain matches the base domain; False otherwise.
         """
         return urlparse(url).netloc == self.base_domain
+
+    def is_interesting_page(self, url: str) -> bool:
+        """
+        Determines if a page is likely to be interesting to a human reader.
+
+        :param url: The URL to check.
+        :return: True if the URL is likely interesting; False otherwise.
+        """
+        uninteresting_patterns = [
+            r'/Category:',
+            r'/privacy',
+            r'Wikipedia:',
+            r'User:',
+            r'Help:',
+            r'User_talk:',
+            r'Portal:',
+            r'Template:',
+            r'Special:',
+            r'Template_talk:',
+            r'Wikipedia_talk:',
+        ]
+        uninteresting_extensions = ['.jpg', '.png', '.docx', '.jpeg', '.svg', '.gif']
+
+        # Decode the URL
+        decoded_url = unquote(url)
+
+        # Check for uninteresting URL patterns
+        if any(pattern in decoded_url for pattern in uninteresting_patterns):
+            return False
+
+        # Check for uninteresting file extensions
+        if decoded_url.split('?')[0].lower().endswith(tuple(uninteresting_extensions)):
+            return False
+
+        return True
