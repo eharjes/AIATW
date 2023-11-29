@@ -26,14 +26,14 @@ class Crawler:
         stack = [self.start_url]
         while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
-            if url not in self.visited and self.is_interesting_page(url):
+            if url not in self.visited:
                 self.visited.add(url)
                 content = self.get_content(url)
                 if content is not None:
                     links = self.get_links(content, url)
                     stack.extend(links)
         
-        print('visited', self.visited)
+        #print('visited', self.visited)
 
     def get_content(self, url: str) -> str:
         """

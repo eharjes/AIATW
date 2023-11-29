@@ -6,6 +6,7 @@ from whoosh.qparser import QueryParser, AndGroup
 from bs4 import BeautifulSoup
 import re
 import numpy as np
+import requests
 
 
 
@@ -79,27 +80,6 @@ class SearchEngine:
             # Perform the search
             results = searcher.search(query,limit=100)
 
-            # occur_urls = []
-            # for result in results:
-            #     url = result['url']
-            #     soup = BeautifulSoup(result['content'], 'html.parser')
-            #     text_content = soup.get_text(separator=' ', strip=True).lower()
-            #     content = re.split(r'\W+', text_content)
-
-            #     query_words = np.array(words)
-            #     content_words = np.array(content)
-            #     # Find where items in np_list2 are in np_list1
-            #     matches = np.isin(content_words, query_words)
-
-            #     # Get indices of matches and counts
-            #     indices = np.where(matches)[0]
-            #     count_words = np.sum(matches)
-            #     context_list = content[indices[0]-4: indices[0]+5]
-            #     context_text = ' '.join(context_list)
-            #     occur_urls.append([count_words, context_text, url])
-            #     sorted_occur_urls = sorted(occur_urls, key=lambda x: x[0], reverse=True)
-
-
             processed_results = self.process_search_results(results)
             # Collect the URLs from the results
             urls = [result['url'] for result in results]
@@ -121,8 +101,8 @@ class SearchEngine:
                         context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
-            context_urls = zip(context, urls)
-            word_con_urls_tit = [0] * len(word_occurrences)
+            urls_context = zip(urls, context)
+            sorted_occur_urls = [0] * len(word_occurrences)
 
             for i, (context_word, url) in enumerate(urls_context):
                 # check if word occured at all
