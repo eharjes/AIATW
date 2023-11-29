@@ -65,9 +65,7 @@ class SearchEngine:
         """
         # Open the existing index directory
         ix = open_dir(self.index_dir)
-        print(words)
-
-        words = [word.lower() for word in words.split()]
+        words = [word.lower() for word in words]
 
         # Use Whoosh's searcher
         with ix.searcher() as searcher:
@@ -77,8 +75,7 @@ class SearchEngine:
             parser = QueryParser("content", ix.schema, group=AndGroup)
             # Create a query string that includes all words
             query_str = ' AND '.join(words)
-            print(words)
-            print(query_str)
+
             # Parse the query string
             query = parser.parse(query_str)
 
@@ -99,34 +96,17 @@ class SearchEngine:
                 # content = re.split('(\W+?)', result['content'].lower())
                 # content = [el for el in content if el not in empty]
 
-                response = requests.get(url)
-                soup = BeautifulSoup(response.content, 'html.parser')
-                soup_text = soup.get_text()
-                texts = soup.findAll(text=True)
-                # split_soup = soup_text.split()
-                # print(texts)
-                visible_texts = filter(tag_visible, texts)
+                split_soup, split_soup_lower = get_beautiful_text(url, )
 
-                visible_texts_soup = u" ".join(t.strip() for t in visible_texts)
-                split_soup = visible_texts_soup.split()
-                split_soup_lower = [word.lower() for word in visible_texts_soup.split()]
-
-
-
-                for spot, (word_lower, word) in enumerate(zip(split_soup_lower, split_soup)):
+                for spot, word_lower in enumerate(split_soup_lower):
                     if word_lower in words:
                         word_occurrences[indx] += 1
                         context[indx] = split_soup[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
 
-                print(word_occurrences)
-                print(url)
-                print()
-                print()
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
             context_urls = zip(context, urls)
-
             word_con_urls_tit = self.get_merged_list(context_urls, word_occurrences)
 
         return word_con_urls_tit
@@ -160,9 +140,25 @@ class SearchEngine:
 
 
 def tag_visible(element):
+    # print(element)
     if element.parent.name in ['style', 'script', 'head', 'meta', 'title', '[document]']:
+        # ['style', 'script', 'head', 'meta', 'title', '[document]']
         return False
     if isinstance(element, Comment):
         return False
     return True
 
+def get_beautiful_text(url):
+
+    # print("NEW")
+    # print()
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    texts = soup.findAll(text=True)
+    # print(texts)
+    visible_texts_soup = u" ".join(t.strip() for t in filter(tag_visible, texts))
+
+    split_soup = visible_texts_soup.split()
+    split_soup_lower = [word.lower() for word in split_soup]
+
+    return split_soup, split_soup_lower
