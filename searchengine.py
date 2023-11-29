@@ -9,7 +9,6 @@ import requests
 from bs4.element import Comment
 
 
-
 class SearchEngine:
     def __init__(self, start_url, max_pages, index_dir='indexdir'):
         self.crawler = Crawler(start_url, max_pages)
@@ -140,22 +139,19 @@ class SearchEngine:
 
 
 def tag_visible(element):
-    # print(element)
-    if element.parent.name in ['style', 'script', 'head', 'meta', 'title', '[document]']:
+    if element.parent.name in ['meta']:
         # ['style', 'script', 'head', 'meta', 'title', '[document]']
         return False
     if isinstance(element, Comment):
         return False
     return True
 
-def get_beautiful_text(url):
 
-    # print("NEW")
-    # print()
+def get_beautiful_text(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     texts = soup.findAll(text=True)
-    # print(texts)
+
     visible_texts_soup = u" ".join(t.strip() for t in filter(tag_visible, texts))
 
     split_soup = visible_texts_soup.split()
