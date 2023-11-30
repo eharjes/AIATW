@@ -102,10 +102,10 @@ class SearchEngine:
                         context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
-            urls_context = zip(context, urls)
+            context_urls = zip(context, urls)
             word_con_urls_tit = [0] * len(word_occurrences)
 
-            for i, (context_word, url) in enumerate(urls_context):
+            for i, (context_word, url) in enumerate(context_urls):
 
                 soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
                 title = soup_title.title.string
