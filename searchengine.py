@@ -12,8 +12,9 @@ import requests
 
 
 class SearchEngine:
-    def __init__(self, start_url, max_pages, index_dir='indexdir'):
+    def __init__(self, start_url, max_pages, index_dir='indexdir', create_index=False):
         self.crawler = Crawler(start_url, max_pages)
+        self.max_pages = max_pages
         self.index_dir = index_dir
         # Define the schema for indexing
         self.schema = Schema(
@@ -21,7 +22,14 @@ class SearchEngine:
             content=TEXT(stored=True)
         )
         # Create or open the index directory
-        if not os.path.exists(self.index_dir):
+        # if not os.path.exists(self.index_dir):
+        #     os.makedirs(self.index_dir)
+        #     self.ix = create_in(self.index_dir, self.schema)
+        # else:
+        #     self.ix = open_dir(self.index_dir)
+        
+        # Open the index directory
+        if create_index:
             os.makedirs(self.index_dir)
             self.ix = create_in(self.index_dir, self.schema)
         else:
@@ -79,9 +87,8 @@ class SearchEngine:
             query = parser.parse(query_str)
 
             # Perform the search
-            results = searcher.search(query,limit=100)
+            results = searcher.search(query,limit=self.max_pages)
 
-            processed_results = self.process_search_results(results)
             # Collect the URLs from the results
             urls = [result['url'] for result in results]
             word_occurrences = [0] * len(urls)
@@ -107,10 +114,12 @@ class SearchEngine:
 
             for i, (context_word, url) in enumerate(context_urls):
 
-                soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
-                title = soup_title.title.string
+                # soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
+                # title = soup_title.title.string
 
                 if word_occurrences[i] > 0:
+                    soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
+                    title = soup_title.title.string
                     word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
             word_con_urls_tit = [elem for elem in word_con_urls_tit if elem != 0]
             word_con_urls_tit = sorted(word_con_urls_tit, reverse = True)
@@ -143,14 +152,3 @@ class SearchEngine:
             html_content = re.sub(r'\s+', ' ', html_content).strip()
 
         return html_content
-
-
-
-    def process_search_results(self, results):
-        processed_results = [dict(hit) for hit in results]
-        # if self.__stored_content:
-        highlights = [hit.highlights("content") for hit in results]
-        highlights = [BeautifulSoup(highlight, "html.parser").get_text() for highlight in highlights]
-        for i, highlight in enumerate(highlights):
-            processed_results[i]["highlight"] = highlight
-        return tuple(processed_results)

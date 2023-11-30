@@ -85,7 +85,7 @@ class Crawler:
         """
         uninteresting_patterns = [
             r'/Category:',
-            r'/privacy',
+            # r'/privacy',
             r'Wikipedia:',
             r'User:',
             r'Help:',

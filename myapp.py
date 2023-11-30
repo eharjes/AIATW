@@ -5,7 +5,6 @@ import whoosh
 # initialize all variables
 app = Flask(__name__)
 search_engine = SearchEngine('https://en.wikipedia.org/wiki/Home_page', 100) # https://vm009.rz.uos.de/crawl/index.html, https://en.wikipedia.org/wiki/Home_page, https://www.nytimes.com/ https://en.wikipedia.org/wiki/Artificial_intelligence
-search_engine.build_index()
 search_history = []
 
 @app.route('/')
