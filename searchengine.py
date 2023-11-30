@@ -19,7 +19,9 @@ class SearchEngine:
         # Define the schema for indexing
         self.schema = Schema(
             url=ID(stored=True, unique=True),
-            content=TEXT(stored=True)
+            content=TEXT(stored=True),
+            title=TEXT(stored=True)
+
         )
         # Create or open the index directory
         # if not os.path.exists(self.index_dir):
@@ -48,9 +50,10 @@ class SearchEngine:
             self.crawler.crawl()
             for url in self.crawler.visited:
                 content = self.crawler.get_content(url)
+                soup = BeautifulSoup(content, 'html.parser')
                 content = self.clean_text(content)
-                if content is not None:
-                    writer.add_document(url=url, content=content)
+                if content is not None:                                   #add str() here to avoid max depth recursion error
+                    writer.add_document(url=url, content=content, title = str(soup.title.string))
             writer.commit()
     
     def is_index_built(self):
@@ -89,8 +92,9 @@ class SearchEngine:
             # Perform the search
             results = searcher.search(query,limit=self.max_pages)
 
-            # Collect the URLs from the results
+            # Collect the URLs and titles from the results
             urls = [result['url'] for result in results]
+            titles = [result['title'] for result in results]
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
             empty = ['', ' ']
@@ -109,17 +113,17 @@ class SearchEngine:
                         context[indx] = " ".join(context[indx])
 
             # Convert the dictionary to a list of tuples and sort by count in descending order
-            context_urls = zip(context, urls)
+            context_urls_titles = zip(context, urls, titles)
             word_con_urls_tit = [0] * len(word_occurrences)
 
-            for i, (context_word, url) in enumerate(context_urls):
+            for i, (context_word, url, title) in enumerate(context_urls_titles):
 
                 # soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
                 # title = soup_title.title.string
 
                 if word_occurrences[i] > 0:
-                    soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
-                    title = soup_title.title.string
+                    # soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
+                    # title = soup_title.title.string
                     word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
             word_con_urls_tit = [elem for elem in word_con_urls_tit if elem != 0]
             word_con_urls_tit = sorted(word_con_urls_tit, reverse = True)

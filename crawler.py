@@ -26,6 +26,8 @@ class Crawler:
         stack = [self.start_url]
         while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
+            #soup = BeautifulSoup(self.get_content(url), 'html.parser')
+            #title = soup.title.string
             if url not in self.visited and self.is_interesting_page(url):
                 self.visited.add(url)
                 content = self.get_content(url)
