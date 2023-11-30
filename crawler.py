@@ -26,7 +26,7 @@ class Crawler:
         stack = [self.start_url]
         while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
-            if url not in self.visited:
+            if url not in self.visited and self.is_interesting_page(url):
                 self.visited.add(url)
                 content = self.get_content(url)
                 if content is not None:
@@ -95,6 +95,7 @@ class Crawler:
             r'Special:',
             r'Template_talk:',
             r'Wikipedia_talk:',
+            r'index.php',
         ]
         uninteresting_extensions = ['.jpg', '.png', '.docx', '.jpeg', '.svg', '.gif']
 
