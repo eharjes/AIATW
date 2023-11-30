@@ -5,30 +5,22 @@ from whoosh.fields import Schema, TEXT, ID
 from whoosh.qparser import QueryParser, AndGroup
 from bs4 import BeautifulSoup
 import re
-import numpy as np
-import requests
-
 
 
 
 class SearchEngine:
-    def __init__(self, start_url, max_pages, index_dir='indexdir', create_index=False):
+    def __init__(self, start_url, max_pages, index_dir = 'indexdir', create_index = False):
         self.crawler = Crawler(start_url, max_pages)
         self.max_pages = max_pages
         self.index_dir = index_dir
         # Define the schema for indexing
         self.schema = Schema(
             url=ID(stored=True, unique=True),
-            content=TEXT(stored=True)
+            content=TEXT(stored=True),
+            title=TEXT(stored=True)
+
         )
         # Create or open the index directory
-        # if not os.path.exists(self.index_dir):
-        #     os.makedirs(self.index_dir)
-        #     self.ix = create_in(self.index_dir, self.schema)
-        # else:
-        #     self.ix = open_dir(self.index_dir)
-        
-        # Open the index directory
         if create_index:
             os.makedirs(self.index_dir)
             self.ix = create_in(self.index_dir, self.schema)
@@ -43,14 +35,18 @@ class SearchEngine:
         :param: none specified, the intern parameters will be used
         :return:initializes an index writer, starts or continues web crawling, retrieves web page content, and adds the content to the index
         """
+        # if no index exists yet build one
         if not self.is_index_built():
             writer = self.ix.writer()
             self.crawler.crawl()
+            # extract all information for the index from the url
             for url in self.crawler.visited:
                 content = self.crawler.get_content(url)
+                soup = BeautifulSoup(content, 'html.parser')
                 content = self.clean_text(content)
-                if content is not None:
-                    writer.add_document(url=url, content=content)
+                # and add information to the index directory
+                if content is not None:                                   #add str() here to avoid max depth recursion error
+                    writer.add_document(url=url, content=content, title = str(soup.title.string))
             writer.commit()
     
     def is_index_built(self):
@@ -78,7 +74,6 @@ class SearchEngine:
 
         # Use Whoosh's searcher
         with ix.searcher() as searcher:
-
             # Using the AndGroup to require all words in the query
             parser = QueryParser("content", ix.schema, group=AndGroup)
             # Create a query string that includes all words
@@ -89,43 +84,42 @@ class SearchEngine:
             # Perform the search
             results = searcher.search(query,limit=self.max_pages)
 
-            # Collect the URLs from the results
+            # Collect the URLs and titles from the results
             urls = [result['url'] for result in results]
+            titles = [result['title'] for result in results]
+            # initialize context and word_occurences for displayed information on search results
             word_occurrences = [0] * len(urls)
             context = [0] * len(urls)
-            empty = ['', ' ']
 
             # Iterate through the results and count word occurrences
             for indx, result in enumerate(results):
-                # content = result['content'].lower().split()  # Convert content to lowercase and split into words
+
+                # Convert content to lowercase and split into words
                 soup = BeautifulSoup(result['content'], 'html.parser')
                 text_content = soup.get_text(separator=' ', strip=True).lower()
                 content = re.split(r'\W+', text_content)
-                
+
+                # count the word occurrences
                 for spot, word in enumerate(content):
                     if word in words:
                         word_occurrences[indx] += 1
                         context[indx] = content[spot-4: spot+5]
                         context[indx] = " ".join(context[indx])
 
-            # Convert the dictionary to a list of tuples and sort by count in descending order
-            context_urls = zip(context, urls)
+            # zip information into one to search through
+            context_urls_titles = zip(context, urls, titles)
             word_con_urls_tit = [0] * len(word_occurrences)
 
-            for i, (context_word, url) in enumerate(context_urls):
+            # search through pages to find the pages with occurrences of the query
+            for i, (context_word, url, title) in enumerate(context_urls_titles):
 
-                # soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
-                # title = soup_title.title.string
-
+                # record pages on which the query was found with all information
                 if word_occurrences[i] > 0:
-                    soup_title = BeautifulSoup(requests.get(url).content, 'html.parser')
-                    title = soup_title.title.string
                     word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
+
+            # Convert the dictionary to a list of tuples and sort by count in descending order
             word_con_urls_tit = [elem for elem in word_con_urls_tit if elem != 0]
             word_con_urls_tit = sorted(word_con_urls_tit, reverse = True)
-
-            # sorted_urls = [x[1] for x in word_con_urls_tit]
-            # sorted_occurrences = [x[0] for x in word_con_urls_tit]
 
         return word_con_urls_tit
     

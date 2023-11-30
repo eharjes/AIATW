@@ -29,18 +29,24 @@ def search():
     word_con_urls_tit = search_engine.search(query.split())
     # initialize recommendation as empty string that only fills if correct_query() returns something different than the query
     recommendation = ""
+
     # expand search_history without duplicates
     if query not in search_history and query != "":
         search_history.append(query)
+
     # keep search_history to at most 10 entries
     if len(search_history) > 10:
         search_history.pop(0)
+
     # use the previously created index for our recommendations (only used in html when the query does not return any urls)
     qp = whoosh.qparser.QueryParser("content", search_engine.ix.schema)
     q = qp.parse(query)
+
     with search_engine.ix.searcher() as searcher:
         corrected = searcher.correct_query(q, query)
+
         # if our query is different from the with our index corrected one we get recommendations
         if corrected.query != q:
             recommendation = corrected.string
+            
     return render_template('search_results_template.html',word_con_urls_tit = word_con_urls_tit, length = len(word_con_urls_tit), query = query, recommendation = recommendation)

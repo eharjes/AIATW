@@ -1,5 +1,8 @@
 # Artificial Intelligence and the Web - Project 1: Search Engine
 This is the search engine of group 78, Felix Japtok (977397), Eva Kuth (979896) and Elias Harjes(979086)
+### How to use
+1. execute "create_index.py" to create the index for the search (size and domain can be edited inside "create_index.py")
+2. start the search engine lokally via flask or with myapp.wsgi on the server
 ### Included features
 * Searchhistory of the last 10 searched queries
 * Searching for single or multiple word queries

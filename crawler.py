@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, unquote
-import re
 
 class Crawler:
     """
@@ -26,14 +25,18 @@ class Crawler:
         stack = [self.start_url]
         while stack and len(self.visited) < self.max_pages:
             url = stack.pop()
+            # start = time.time()
+            # soup = BeautifulSoup(self.get_content(url), 'html.parser')
+            # end = time.time()
+            # print('took time: ', end - start)
+            #title = soup.title.string
             if url not in self.visited and self.is_interesting_page(url):
                 self.visited.add(url)
                 content = self.get_content(url)
                 if content is not None:
                     links = self.get_links(content, url)
                     stack.extend(links)
-        
-        #print('visited', self.visited)
+
 
     def get_content(self, url: str) -> str:
         """
@@ -44,8 +47,10 @@ class Crawler:
         """
         try:
             response = self.session.get(url, timeout=5)
+
             if response.status_code == 200 and 'text/html' in response.headers.get('Content-Type', ''):
                 return response.text
+            
         except requests.RequestException as e:
             print(f"Request failed: {e}")
         return None
@@ -61,10 +66,13 @@ class Crawler:
         soup = BeautifulSoup(content, 'html.parser')
         links = []
         for a_tag in soup.find_all('a', href=True):
+
             href = a_tag['href']
             url = urljoin(base_url, href)
+
             if self.is_same_server(url):
                 links.append(url)
+
         return links
 
     def is_same_server(self, url: str) -> bool:
@@ -83,6 +91,7 @@ class Crawler:
         :param url: The URL to check.
         :return: True if the URL is likely interesting; False otherwise.
         """
+        # recognized patterns resulting in uninteresting search results
         uninteresting_patterns = [
             r'/Category:',
             # r'/privacy',
