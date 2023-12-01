@@ -96,15 +96,17 @@ class SearchEngine:
 
                 # Convert content to lowercase and split into words
                 soup = BeautifulSoup(result['content'], 'html.parser')
-                text_content = soup.get_text(separator=' ', strip=True).lower()
-                content = re.split(r'\W+', text_content)
+                text_content = soup.get_text(separator=' ', strip=True)
+                content = re.split(r'\W+', text_content.lower())
+                content_for_context = re.findall(r"[\w']+|[.,!?;]", text_content)
 
                 # count the word occurrences
                 for spot, word in enumerate(content):
                     if word in words:
                         word_occurrences[indx] += 1
-                        context[indx] = content[spot-4: spot+5]
-                        context[indx] = " ".join(context[indx])
+                        context[indx] = content_for_context[spot-4: spot+5]
+                        context[indx] = (" ".join(context[indx])).replace(' .','.').replace(' ,',',')
+
 
             # zip information into one to search through
             context_urls_titles = zip(context, urls, titles)
