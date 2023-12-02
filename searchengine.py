@@ -45,10 +45,11 @@ class SearchEngine:
                 soup = BeautifulSoup(content, 'html.parser')
                 content = self.clean_text(content)
                 # Extract the title and convert to a plain string
+                # add str() to avoid max depth recursion error
                 title = soup.title.string if soup.title else 'No Title'
                 title = str(title).strip()
                 # and add information to the index directory
-                if content is not None:                                   #add str() here to avoid max depth recursion error
+                if content is not None:                                   
                     writer.add_document(url=url, content=content, title = title)
             writer.commit()
     
