@@ -5,11 +5,12 @@ from whoosh.fields import Schema, TEXT, ID
 from whoosh.qparser import QueryParser, AndGroup
 from bs4 import BeautifulSoup
 import re
+from typing import List, Tuple, Optional
 
 
 
 class SearchEngine:
-    def __init__(self, start_url, max_pages, index_dir = 'indexdir', create_index = False):
+    def __init__(self, start_url: str, max_pages: int, index_dir: str = 'indexdir', create_index: bool = False) -> None:
         self.crawler = Crawler(start_url, max_pages)
         self.max_pages = max_pages
         self.index_dir = index_dir
@@ -27,7 +28,7 @@ class SearchEngine:
         else:
             self.ix = open_dir(self.index_dir)
 
-    def build_index(self):
+    def build_index(self) -> None:
         """
         Builds an index for web pages by crawling and then indexing their content
         initializes an index writer, starts or continues web crawling, retrieves web page content, and adds the content to the index
@@ -53,7 +54,7 @@ class SearchEngine:
                     writer.add_document(url=url, content=content, title = title)
             writer.commit()
     
-    def is_index_built(self):
+    def is_index_built(self) -> bool:
         """
         Checks if the index directory exists and if there are documents in it
 
@@ -66,12 +67,21 @@ class SearchEngine:
                 return searcher.doc_count() > 0
         return False
     
-    def search(self, words):
+    def search(self, words: List[str]) -> List[Tuple[int, str, str, str]]:
         """
-        Search for pages that contain all the search words.
+        Searches the indexed web pages for the specified words and returns a list of pages where these words occur.
 
-        :param words: A list of words to search for.
-        :return: A list of URLs containing all the search words.
+        This method performs a search using the provided list of words. It searches for pages where all these words occur, 
+        counts the number of occurrences of these words on each page, and retrieves the context around these occurrences. 
+        It then returns a sorted list of tuples, each containing the count of word occurrences, the context snippet, 
+        the URL, and the title of the page.
+
+        The results are sorted in descending order based on the number of word occurrences.
+
+        :param words: A list of words to search for in the indexed content.
+        :return: A list of tuples, each tuple containing the count of word occurrences, a context snippet, 
+                the URL, and the title of the page where the words were found. The list is sorted by the count of 
+                word occurrences in descending order.
         """
         # Open the existing index directory
         ix = open_dir(self.index_dir)
