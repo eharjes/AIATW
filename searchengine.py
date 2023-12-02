@@ -35,7 +35,7 @@ class SearchEngine:
         :param: none specified, the intern parameters will be used
         :return:initializes an index writer, starts or continues web crawling, retrieves web page content, and adds the content to the index
         """
-        # if no index exists yet build one
+        # build index only if it does not exist yet
         if not self.is_index_built():
             writer = self.ix.writer()
             self.crawler.crawl()
@@ -44,9 +44,12 @@ class SearchEngine:
                 content = self.crawler.get_content(url)
                 soup = BeautifulSoup(content, 'html.parser')
                 content = self.clean_text(content)
+                # Extract the title and convert to a plain string
+                title = soup.title.string if soup.title else 'No Title'
+                title = str(title).strip()
                 # and add information to the index directory
                 if content is not None:                                   #add str() here to avoid max depth recursion error
-                    writer.add_document(url=url, content=content, title = str(soup.title.string))
+                    writer.add_document(url=url, content=content, title = title)
             writer.commit()
     
     def is_index_built(self):
