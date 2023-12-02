@@ -15,6 +15,7 @@ This is the search engine of group 78, Felix Japtok (977397), Eva Kuth (979896) 
 * Pretty presentation of search results 
     + show the total number of links found for the given query
     + ordering of the found links based on occurrences of the query
+    + duplicate pages are removed and only the one with the shortest url will be presented
     + results are presented in small boxes:
         - clickable title of the found page
         - link to the website found (links can clip outside the box for extremely long links)
