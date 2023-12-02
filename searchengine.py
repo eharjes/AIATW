@@ -132,7 +132,28 @@ class SearchEngine:
                 # record pages on which the query was found with all information
                 if word_occurrences[i] > 0:
                     word_con_urls_tit[i] = [word_occurrences[i], context_word, url, title]
+            
+            # filter out duplicates from found results and choose the shortest url for each duplicate
+            compare_titles = [0] * len(word_con_urls_tit)
+            compare_urls = [0] * len(word_con_urls_tit)
 
+            for i, entry in enumerate(word_con_urls_tit):
+
+                if entry[3] not in compare_titles:
+                    compare_titles[i] = entry[3]
+                    compare_urls[i] = entry[2]
+
+                else:
+                    for idx, title in enumerate(compare_titles):
+
+                        if title == entry[3]:
+
+                            if len(entry[2]) < len(compare_urls[idx]):
+                                word_con_urls_tit[idx] = 0
+
+                            else:
+                                word_con_urls_tit[i] = 0
+            
             # Convert the dictionary to a list of tuples and sort by count in descending order
             word_con_urls_tit = [elem for elem in word_con_urls_tit if elem != 0]
             word_con_urls_tit = sorted(word_con_urls_tit, reverse = True)
