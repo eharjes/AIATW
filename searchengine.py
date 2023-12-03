@@ -138,21 +138,23 @@ class SearchEngine:
             compare_urls = [0] * len(word_con_urls_tit)
 
             for i, entry in enumerate(word_con_urls_tit):
-                # build list filled with unique titles and urls
-                if entry[3] not in compare_titles:
-                    compare_titles[i] = entry[3]
-                    compare_urls[i] = entry[2]
-                # if a duplicate website is found
-                else:
-                    # determine which entry in the results should be removed based on url length
-                    for idx, title in enumerate(compare_titles):
-                        # at the spot where the duplicate is located
-                        if title == entry[3]:
-                            # remove the entry with the longer url from the results
-                            if len(entry[2]) < len(compare_urls[idx]):
-                                word_con_urls_tit[idx] = 0
-                            else:
-                                word_con_urls_tit[i] = 0
+                # ignore empty entries as they will be removed later anyway
+                if entry != 0:
+                    # build list filled with unique titles and urls
+                    if entry[3] not in compare_titles:
+                        compare_titles[i] = entry[3]
+                        compare_urls[i] = entry[2]
+                    # if a duplicate website is found
+                    else:
+                        # determine which entry in the results should be removed based on url length
+                        for idx, title in enumerate(compare_titles):
+                            # at the spot where the duplicate is located
+                            if title == entry[3]:
+                                # remove the entry with the longer url from the results
+                                if len(entry[2]) < len(compare_urls[idx]):
+                                    word_con_urls_tit[idx] = 0
+                                else:
+                                    word_con_urls_tit[i] = 0
             
             # Convert the dictionary to a list of tuples and sort by count in descending order
             word_con_urls_tit = [elem for elem in word_con_urls_tit if elem != 0]
