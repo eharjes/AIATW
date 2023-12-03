@@ -111,8 +111,8 @@ class SearchEngine:
                 # Convert content to lowercase and split into words
                 soup = BeautifulSoup(result['content'], 'html.parser')
                 text_content = soup.get_text(separator=' ', strip=True)
-                content = re.split(r'\W+', text_content.lower())
                 content_for_context = re.findall(r"[\w']+|[.,!?;]", text_content)
+                content = re.findall(r"[\w']+|[.,!?;]", text_content.lower())
 
                 # count the word occurrences
                 for spot, word in enumerate(content):
